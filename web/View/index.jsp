@@ -11,10 +11,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta charset="UTF-8">
-        <title>JSP Page</title>
-    </head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/css/base.css" />
+    <title>Document</title>
+  </head>
+    <style>
+        h2 {
+            background-color: var(--primary--color--);
+        }
+    </style>
     <body>
         <h2>Danh sách mặt hàng</h2>
     <table border="1">

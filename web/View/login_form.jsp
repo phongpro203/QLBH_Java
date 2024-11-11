@@ -13,85 +13,97 @@
         <title>Đăng Nhập</title>
        
         <style>
+            body {
+                margin: 0;
+                font-family: "Roboto", sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background-color: var(--white-color--);
+                
+            }
             .login-container {
                 width: 100%;
-                max-width: 500px;
-                margin: 80px auto;
-                padding: 32px;
-                background-color: var(--primary--color--);
+                max-width: 35%;
+                height: 90%;
+                background-color: var(--white-color--);
                 border-radius: 20px;
-                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
                 text-align: center;
             }
-            .login-container h2 {
-                font-size: 3rem;
+            .login-container form{
+                padding: 35px;
+            }
+            .header{
+                display: flex;
+                border-radius: 20px 20px 0px 0px;
                 color: var(--white-color--);
-                background-color: var(--primary--color--);
-                margin-bottom: 32px;
-            }
-            .input-group {
-                margin-bottom: 25px;
-            }
-            .input-group input {
                 width: 100%;
-                font-size: 24px;
+                justify-content: center;
+                height: 15%;
+                background-color: var(--primary--color--);
+            }
+            .header h1{
+                padding-top: 1%;
+                font-size: 50px;
+            }
+            input{
+                padding-left: 25px;
+                font-size: 25px;
+                margin-bottom: 25px;
+                width: 100%;
+                height: 50px;
                 border: none;
                 border-radius: 45px;
                 background-color: #f0f0f0;
             }
-            .options {
-                text-align: right;
-                margin-bottom: 25px;
-            }
-            .options a {
-                color: var(--primary--color--);
-                text-decoration: none;
-                font-size: 22px;
+            input::placeholder{
+                color: darkgreen;
+                font-size: 25px;
             }
             button{
                 background-color: var(--primary--color--);
             }
             .login-button {
+                margin-top:  5%;
                 width: 100%;
                 padding: 16px;
                 font-size: 24px;
                 color: var(--white-color--);
-                
                 border: none;
                 border-radius: 45px;
                 cursor: pointer;
             }
             .signup {
-                margin-top: 32px;
+                margin-top: 38%;
                 font-size: 22px;
             }
             .signup a {
-                background-color: var(--primary--color--);
+                color: var(--primary--color--);
                 text-decoration: none;
                 font-weight: bold;
             }
         </style>
 </head>
 <body>
-    <div>
-                <div class="login-container">
-                    <h2>SIGN IN</h2>
-                    <form action="" method="post">
-                        <div class="input-group">
-                            <input type="text" name="txtUser" placeholder="Username" required>
-                        </div>
-                        <div class="input-group">
-                            <input type="password" name="txtPass" placeholder="Password" required>
-                        </div>
-                        <div class="options">
-                            <a href="#">Forgot Username / Password?</a>
-                        </div>
-                        <button type="submit" class="login-button">SIGN IN</button>
-                    </form>
-                    <div class="signup">
-                        <p>Don’t have an account?</p>
-                        <a href="#">SIGN UP NOW</a>
-                    </div>
-                </div>
+    <div class="login-container">
+        <div class="header">
+           <h1>Đăng nhập</h1> 
+        </div> 
+        <form action="" method="post">
+            <div>
+                <input type="text" name="txtUser" placeholder="Tên đăng nhập" required>
+            </div>
+            <div>
+                <input type="password" name="txtPass" placeholder="Mật khẩu" required>
+            </div>
+            <button type="submit" class="login-button">ĐĂNG NHẬP</button>
+        </form>
+        <div class="signup">
+            <p>Không có tài khoản?</p>
+            <a href="#">ĐĂNG KÝ NGAY</a>
+        </div>
+    </div>
 </body>
 </html>

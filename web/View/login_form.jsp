@@ -15,7 +15,6 @@
         <style>
             body {
                 margin: 0;
-                font-family: "Roboto", sans-serif;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -24,6 +23,7 @@
                 
             }
             .login-container {
+                position: relative;
                 width: 100%;
                 max-width: 35%;
                 height: 90%;
@@ -36,30 +36,31 @@
                 padding: 35px;
             }
             .header{
+                padding: 20px;   
                 display: flex;
                 border-radius: 20px 20px 0px 0px;
                 color: var(--white-color--);
                 width: 100%;
                 justify-content: center;
-                height: 15%;
                 background-color: var(--primary--color--);
+                margin-bottom: 20px;
             }
             .header h1{
                 padding-top: 1%;
-                font-size: 50px;
+                font-size: 40px;
             }
             input{
+                padding: 15px 0;
                 padding-left: 25px;
-                font-size: 25px;
+                font-size: 20px;
                 margin-bottom: 25px;
                 width: 100%;
-                height: 50px;
                 border: none;
                 border-radius: 45px;
                 background-color: #f0f0f0;
             }
             input::placeholder{
-                color: darkgreen;
+                color: var(--text-color--);
                 font-size: 25px;
             }
             button{
@@ -69,15 +70,21 @@
                 margin-top:  5%;
                 width: 100%;
                 padding: 16px;
-                font-size: 24px;
+                font-size: 20px;
                 color: var(--white-color--);
                 border: none;
                 border-radius: 45px;
                 cursor: pointer;
             }
+            .login-button:hover {
+                opacity: 80%;
+            }
             .signup {
-                margin-top: 38%;
+                position: absolute;
                 font-size: 22px;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
             }
             .signup a {
                 color: var(--primary--color--);
@@ -91,14 +98,25 @@
         <div class="header">
            <h1>Đăng nhập</h1> 
         </div> 
-        <form action="" method="post">
+        <form action="${pageContext.request.contextPath}/Login" method="POST">
             <div>
-                <input type="text" name="txtUser" placeholder="Tên đăng nhập" required>
+                <input type="text" name="username" placeholder="Tên đăng nhập" required>
             </div>
             <div>
-                <input type="password" name="txtPass" placeholder="Mật khẩu" required>
+                <input type="password" name="password" placeholder="Mật khẩu" required>
             </div>
-            <button type="submit" class="login-button">ĐĂNG NHẬP</button>
+            <%
+                String error = request.getParameter("error");
+                if (error != null && error.equals("invalid")) {
+            %>
+            <div style="color: red; font-size: 18px; margin-bottom: 15px;">
+                Sai tên đăng nhập hoặc mật khẩu.
+            </div>
+            <%
+                }
+            %>
+
+            <button class="login-button">ĐĂNG NHẬP</button>
         </form>
         <div class="signup">
             <p>Không có tài khoản?</p>

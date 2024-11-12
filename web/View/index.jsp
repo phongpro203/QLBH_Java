@@ -30,9 +30,12 @@
                 <th>Tên hàng</th>
                 <th>Giá</th>
             </tr>
+            
         </thead>
         <tbody>
             <%
+                int role_id = (int)session.getAttribute("role_id");
+                String username = (String)session.getAttribute("username");
                 // Lấy danh sách mặt hàng từ request
                 List<MatHang> matHangList = (List<MatHang>) request.getAttribute("matHangList");
                 
@@ -41,8 +44,8 @@
                     for (MatHang matHang : matHangList) {
             %>
             <tr>
-                <td><%= matHang.getMahang() %></td>
-                <td><%= matHang.getTenhang() %></td>
+                <td><%= username %></td>
+                <td><%= role_id %></td>
                 <td><%= matHang.getGia() %></td>
             </tr>
             <% 
@@ -53,7 +56,10 @@
                 <td colspan="3">Không có sản phẩm nào</td>
             </tr>
             <% } %>
-        
+            <tr>
+                <td><%= username %></td>
+                <td><%= role_id %></td>
+            </tr>
         </tbody>
     </table>
             <form action="View/a.jsp" method="POST">

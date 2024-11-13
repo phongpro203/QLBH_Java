@@ -4,23 +4,19 @@
  */
 package Controller;
 
-import Model.MatHang;
-import Model.MatHangDB;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author Admin
  */
-@WebServlet("/dashboard")
-public class MatHangServlet extends HttpServlet {
+public class LogoutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +35,10 @@ public class MatHangServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet MatHangServlet</title>");            
+            out.println("<title>Servlet LogoutServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet MatHangServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet LogoutServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,17 +54,9 @@ public class MatHangServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-         MatHangDB matHangDB = new MatHangDB();
-        
-        // Lấy danh sách sản phẩm từ cơ sở dữ liệu
-        List<MatHang> matHangList = matHangDB.findAllProducts();
-        
-        // Chuyển danh sách sản phẩm vào trong request
-        request.setAttribute("matHangList", matHangList);
-        
-        // Chuyển tiếp yêu cầu tới trang JSP
-        request.getRequestDispatcher("View/index.jsp").forward(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 
     /**
@@ -82,8 +70,18 @@ public class MatHangServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+         // Lấy session hiện tại
+        HttpSession session = request.getSession(false);
+        
+        if (session != null) {
+            // Hủy session
+            session.invalidate();
+        }
+        
+        // Chuyển hướng về trang chính hoặc trang đăng nhập
+        response.sendRedirect("Goods");
     }
+    
 
     /**
      * Returns a short description of the servlet.

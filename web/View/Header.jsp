@@ -194,6 +194,9 @@
   width: 200px;
   margin-bottom: 20px;
 }
+.header__logo:hover {
+    cursor: pointer;
+}
 .header__logo-img {
   width: 150px;
   fill: var(--white-color--);
@@ -457,12 +460,14 @@
         </ul>
     </c:if>
               </nav>
-    
+
               <div class="header-with-search">
-                <div class="header__logo">
-                    <i class="logo fa fa-shopping-bag" aria-hidden="true"></i>
-                    <span class="text-logo">Shop</span>
-                </div>
+                  <a href="${pageContext.request.contextPath}/Goods">
+                      <div class="header__logo">
+                          <i class="logo fa fa-shopping-bag" aria-hidden="true"></i>
+                          <span class="text-logo">Shop</span>
+                      </div>
+                  </a>
                 <div class="header__search">
                   <div class="header__search-input-warp">
                     <input

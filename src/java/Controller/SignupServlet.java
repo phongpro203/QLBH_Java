@@ -9,8 +9,10 @@ import Model.UserDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,11 +22,10 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Admin
+ * @author kohakuta
  */
-
-@WebServlet("/Login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/Signup")
+public class SignupServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +44,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");            
+            out.println("<title>Servlet SignupServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SignupServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -75,30 +76,46 @@ public class LoginServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private final UserDB userDB = new UserDB();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String username = (String) request.getParameter("username");
-        String password = (String) request.getParameter("password");
-        UserDB userDB = new UserDB();
+        // Lấy dữ liệu từ request
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        int roleId = Integer.parseInt(request.getParameter("role"));
+        
+        // Tạo đối tượng User và gán giá trị
+        User newuser = new User();
+        newuser.setUserName(username);
+        newuser.setPassword(password);
+        newuser.setRole_id(roleId);
+
         try {
-            User user = new User();
-            user = userDB.checkLogin(username, password);
-            if(user != null)
-            {
-                response.sendRedirect("Goods");
-                HttpSession session = request.getSession();
-                session.setAttribute("id", user.getId());
-                session.setAttribute("username", user.getUserName());
-                session.setAttribute("role_id", user.getRole_id());
-            }
-            else {
-            response.sendRedirect("View/login_form.jsp?error=invalid");
+        if (isUsernameTaken(username)) {
+            response.sendRedirect("View/signup_form.jsp?error=invalid");
+        } else {
+            // Lưu người dùng mới vào cơ sở dữ liệu
+            userDB.insert(newuser);
+
+            // Chuyển hướng đến login_form.jsp
+            response.sendRedirect("View/login_form.jsp");
         }
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (IOException | SQLException e) {
+            response.sendRedirect("View/signup_form.jsp?error=invalid");
+        }    
     }
+    private boolean isUsernameTaken(String username) throws SQLException {
+        // Kiểm tra nếu username đã tồn tại trong CSDL
+        List<User> allUsers = userDB.getAll();
+        for (User user : allUsers) {
+            if (user.getUserName().equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Returns a short description of the servlet.

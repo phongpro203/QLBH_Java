@@ -411,7 +411,7 @@
                                             String formattedGia = currencyFormat.format(gia);
                                             String formattedGiaGoc = currencyFormat.format(goods.getGia());
                                 %>
-                                <a href="/productDetail?id=<%= goods.getId()%>" class="grid__column-2-4">
+                                <a href="${pageContext.request.contextPath}/ProductDetail?id=<%= goods.getId()%>" class="grid__column-2-4">
                                     <div class="home-product-item">
                                         <div
                                             class="home-product-item__img"

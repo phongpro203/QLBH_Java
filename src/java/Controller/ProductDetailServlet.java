@@ -4,6 +4,8 @@
  */
 package Controller;
 
+import Model.Goods;
+import Model.GoodsDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -55,7 +57,11 @@ public class ProductDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        int id = Integer.parseInt(request.getParameter("id"));
+        GoodsDB goodDB = new GoodsDB();
+        Goods goods = goodDB.find(id);
+        request.setAttribute("goods", goods);
+        request.getRequestDispatcher("View/Product_detail.jsp").forward(request, response);
     }
 
     /**

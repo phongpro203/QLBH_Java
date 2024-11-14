@@ -1,6 +1,6 @@
 <%-- 
-    Document   : login_form
-    Created on : Nov 11, 2024, 9:13:59 PM
+    Document   : resign_form
+    Created on : Nov 12, 2024, 3:59:15 PM
     Author     : kohakuta
 --%>
 
@@ -10,7 +10,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="../assets/css/base.css" />
-        <title>Đăng Nhập</title>
+        <title>Đăng Ký</title>
        
         <style>
             body {
@@ -22,7 +22,7 @@
                 background-color: var(--white-color--);
                 
             }
-            .login-container {
+            .signup-container {
                 position: relative;
                 width: 100%;
                 max-width: 35%;
@@ -32,7 +32,7 @@
                 box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
                 text-align: center;
             }
-            .login-container form{
+            .signup-container form{
                 padding: 35px;
             }
             .header{
@@ -63,10 +63,21 @@
                 color: var(--text-color--);
                 font-size: 25px;
             }
+            .custom-select {
+                padding: 15px 25px;
+                font-size: 20px;
+                margin-bottom: 25px;
+                width: 100%;
+                border: none;
+                border-radius: 45px;
+                background-color: #f0f0f0;
+                color: var(--text-color--);
+                appearance: none; /* Ẩn mũi tên mặc định */
+            }
             button{
                 background-color: var(--primary--color--);
             }
-            .login-button {
+            .signup-button {
                 margin-top:  5%;
                 width: 100%;
                 padding: 16px;
@@ -76,51 +87,64 @@
                 border-radius: 45px;
                 cursor: pointer;
             }
-            .login-button:hover {
+            .signup-button:hover {
                 opacity: 80%;
             }
-            .signup {
+            .signin {
                 position: absolute;
                 font-size: 22px;
                 bottom: 20px;
                 left: 50%;
                 transform: translateX(-50%);
             }
-            .signup a {
+            .signin a {
                 color: var(--primary--color--);
+                text-decoration: none;
+                font-weight: bold;
+            }
+            form a{
+                color: green;
                 text-decoration: none;
                 font-weight: bold;
             }
         </style>
 </head>
 <body>
-    <div class="login-container">
+    <div class="signup-container">
         <div class="header">
-           <h1>Đăng nhập</h1> 
+            <h1>Đăng ký</h1> 
         </div> 
-        <form action="${pageContext.request.contextPath}/Login" method="POST">
+        <form action="${pageContext.request.contextPath}/Signup" method="POST">
             <div>
                 <input type="text" name="username" placeholder="Tên đăng nhập" required>
             </div>
             <div>
                 <input type="password" name="password" placeholder="Mật khẩu" required>
             </div>
+            <div>
+                <select name="role" required class="custom-select">
+                    <option value="">Chọn vai trò</option>
+                    <option value="2">Người mua hàng</option>
+                    <option value="3">Người bán hàng</option>
+                    <option value="4">Người giao hàng</option>
+                </select>
+            </div>
+            <button class="signup-button">ĐĂNG KÝ</button>
             <%
                 String error = request.getParameter("error");
                 if (error != null && error.equals("invalid")) {
             %>
-            <div style="color: red; font-size: 18px; margin-bottom: 15px;">
-                Sai tên đăng nhập hoặc mật khẩu.
+            <div style="color: red; font-size: 20px; padding: 15px">
+                Tài khoản đã tồn tại, hãy đăng nhập
             </div>
             <%
-                }
+                }       
             %>
 
-            <button class="login-button">ĐĂNG NHẬP</button>
         </form>
-        <div class="signup">
-            <p>Không có tài khoản?</p>
-            <a href="signup_form.jsp">ĐĂNG KÝ NGAY</a>
+        <div class="signin">
+            <p>Đã có tài khoản?</p>
+            <a href="login_form.jsp">ĐĂNG NHẬP NGAY</a>
         </div>
     </div>
 </body>

@@ -64,4 +64,26 @@ public class UserDB extends DBContext<User>{
         }
         return null;
     }
+    // Thêm phương thức insert để thêm User vào CSDL
+    public void insert(User user) throws SQLException {
+        Connection con = getConnection();
+        String sql = "INSERT INTO user (userrname, password, role_id) VALUES (?, ?, ?)";
+            PreparedStatement statement = con.prepareStatement(sql);
+            statement.setString(1, user.getUserName());
+            statement.setString(2, user.getPassword());
+            statement.setInt(3, user.getRole_id());
+            statement.executeUpdate();
+    }
+    // Lấy tất cả người dùng
+    public ArrayList<User> getAll() throws SQLException {
+        Connection con = getConnection();
+        ArrayList<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM user";
+            PreparedStatement statement = con.prepareStatement(sql);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                userList.add(getEntityFromResultSet(rs));
+            }
+        return userList;
+    }
 }

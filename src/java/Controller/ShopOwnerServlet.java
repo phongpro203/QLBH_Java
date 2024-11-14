@@ -4,27 +4,24 @@
  */
 package Controller;
 
-import Model.User;
-import Model.UserDB;
+import Model.Address;
+import Model.AddressDB;
+import Model.ShopOwner;
+import Model.ShopOwnerDB;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Admin
+ * @author kohakuta
  */
-
-@WebServlet("/Login")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/ShopOwner")
+public class ShopOwnerServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +40,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");            
+            out.println("<title>Servlet ShopOwnerServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ShopOwnerServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -75,30 +72,58 @@ public class LoginServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private ShopOwnerDB shopownerDB = new ShopOwnerDB();
+    private AddressDB addressDB = new AddressDB();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String username = (String) request.getParameter("username");
-        String password = (String) request.getParameter("password");
-        UserDB userDB = new UserDB();
-        try {
-            User user = new User();
-            user = userDB.checkLogin(username, password);
-            if(user != null)
-            {
-                response.sendRedirect("Goods");
-                HttpSession session = request.getSession();
-                session.setAttribute("id", user.getId());
-                session.setAttribute("username", user.getUserName());
-                session.setAttribute("role_id", user.getRole_id());
-            }
-            else {
-            response.sendRedirect("View/login_form.jsp?error=invalid");
+        throws ServletException, IOException {
+    // Lấy thông tin từ form
+    String tenshop = request.getParameter("tenshop");
+    String tenchushop = request.getParameter("tenchushop");
+    String sdt = request.getParameter("sdt");
+    String masothue = request.getParameter("masothue");
+
+    // Lấy thông tin địa chỉ từ form
+    String tinhthanh = request.getParameter("tinhthanh");
+    String xaphuong = request.getParameter("xaphuong");
+    String quanhuyen = request.getParameter("quanhuyen");
+    String sonha = request.getParameter("sonha");
+
+    try {
+        // 1. Thêm địa chỉ vào bảng address và lấy address_id
+        Address address = new Address();
+        address.setTinhthanh(tinhthanh);
+        address.setXaphuong(xaphuong);
+        address.setQuanhuyen(quanhuyen);
+        address.setSonha(sonha);
+        int address_id = addressDB.insert(address);
+
+        // 2. Lấy user_id từ session sau khi đăng ký thành công
+        Integer userId = (Integer) request.getSession().getAttribute("user_id");
+        if (userId == null) {
+            response.sendRedirect("View/ShopOwner.jsp?error=userid is null.");
+            return;
         }
-        } catch (SQLException ex) {
-            Logger.getLogger(LoginServlet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        int user_id = userId.intValue();
+
+        // 3. Thêm người bán hàng với address_id và user_id vừa lấy
+        ShopOwner shopowner = new ShopOwner();
+        shopowner.setTenshop(tenshop);
+        shopowner.setTenchushop(tenchushop);
+        shopowner.setSdt(sdt);
+        shopowner.setMasothue(masothue);
+        shopowner.setAddress_id(address_id);
+        shopowner.setUser_id(user_id);
+
+        shopownerDB.insert(shopowner);
+        
+        response.sendRedirect("View/ShopOwner_form.jsp"); // Điều hướng đến trang thành công
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.sendRedirect("View/ShopOwner.jsp?error=Không thể thêm thông tin");
     }
+}
+
 
     /**
      * Returns a short description of the servlet.

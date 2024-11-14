@@ -22,6 +22,10 @@ import javax.servlet.http.HttpSession;
  *
  * @author kohakuta
  */
+/**
+ *
+ * @author kohakuta
+ */
 @WebServlet("/Signup")
 public class SignupServlet extends HttpServlet {
 
@@ -42,7 +46,7 @@ public class SignupServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SignupServlet</title>");            
+            out.println("<title>Servlet SignupServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet SignupServlet at " + request.getContextPath() + "</h1>");
@@ -75,6 +79,7 @@ public class SignupServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     private final UserDB userDB = new UserDB();
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -82,7 +87,7 @@ public class SignupServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         int roleId = Integer.parseInt(request.getParameter("role"));
-        
+
         // Tạo đối tượng User và gán giá trị
         User newuser = new User();
         newuser.setUserName(username);
@@ -90,22 +95,22 @@ public class SignupServlet extends HttpServlet {
         newuser.setRole_id(roleId);
 
         try {
-        if (isUsernameTaken(username)) {
-            response.sendRedirect("View/signup_form.jsp?error=invalid");
-        } else {
-            // Lưu người dùng mới vào cơ sở dữ liệu
-            userDB.insert(newuser);
-            HttpSession session = request.getSession();
-            session.setAttribute("user_id", newuser.getId());
-            // Chuyển hướng đến login_form.jsp
-            response.sendRedirect("View/sellerSignup.jsp");
-            
+            if (isUsernameTaken(username)) {
+                response.sendRedirect("View/signup_form.jsp?error=invalid");
+            } else {
+                // Lưu người dùng mới vào cơ sở dữ liệu
+                userDB.insert(newuser);
+                HttpSession session = request.getSession();
+                session.setAttribute("user_id", newuser.getId());
+                // Chuyển hướng đến login_form.jsp
+                response.sendRedirect("View/ShopOwner.jsp");
 
-        }
+            }
         } catch (IOException | SQLException e) {
             response.sendRedirect("View/signup_form.jsp?error=invalid");
-        }    
+        }
     }
+
     private boolean isUsernameTaken(String username) throws SQLException {
         // Kiểm tra nếu username đã tồn tại trong CSDL
         List<User> allUsers = userDB.getAll();
@@ -116,7 +121,6 @@ public class SignupServlet extends HttpServlet {
         }
         return false;
     }
-
 
     /**
      * Returns a short description of the servlet.

@@ -53,7 +53,11 @@ public class GoodsDB extends DBContext<Goods> {
         String sql = "SELECT * FROM goods";
         return findAll(sql);
     }
-
+    public Goods find(int id)
+    {
+        String sql = "SELECT * FROM goods WHERE id = ?";
+        return findById(id, sql);
+    }
     public void updateGoods(Goods goods) {
         String sql = "UPDATE goods SET tensp = ?, chungloai = ?, chitiet = ?, gia = ?, soluong = ?, hinhanh = ?, shop_owner_id = ?, giam_gia = ? WHERE id = ?";
         update(goods, sql);

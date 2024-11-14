@@ -16,7 +16,7 @@ import java.sql.*;
  * @author Admin
  */
 public class UserDB extends DBContext<User> {
- 
+
     @Override
     protected void setParametersForInsertOrUpdate(PreparedStatement pstmt, User user) throws SQLException {
         pstmt.setString(1, user.getUserName());
@@ -81,7 +81,7 @@ public class UserDB extends DBContext<User> {
             int generatedId = generatedKeys.getInt(1);
             user.setId(generatedId);  // Lưu id vào user
         }
- 
+
         statement.close();
         con.close();
     }

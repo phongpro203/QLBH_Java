@@ -15,7 +15,7 @@ import java.sql.*;
  *
  * @author Admin
  */
-public class UserDB extends DBContext<User>{
+public class UserDB extends DBContext<User> {
 
     @Override
     protected void setParametersForInsertOrUpdate(PreparedStatement pstmt, User user) throws SQLException {
@@ -23,7 +23,7 @@ public class UserDB extends DBContext<User>{
         pstmt.setString(2, user.getPassword());
         pstmt.setInt(3, user.getRole_id());
         // Nếu đây là câu lệnh update, thêm id ở vị trí cuối cùng
-        if (user.getId()!= 0) {
+        if (user.getId() != 0) {
             pstmt.setInt(3, user.getId());
         }
     }
@@ -47,7 +47,7 @@ public class UserDB extends DBContext<User>{
         }
         return userList;
     }
-    
+
     public User checkLogin(String username, String password) throws SQLException {
         Connection con = getConnection();
         String sql = "SELECT * FROM user WHERE userrname = ? AND password = ?";
@@ -63,5 +63,39 @@ public class UserDB extends DBContext<User>{
             return user;
         }
         return null;
+    }
+
+    // Thêm phương thức insert để thêm User vào CSDL
+    public void insert(User user) throws SQLException {
+        Connection con = getConnection();
+        String sql = "INSERT INTO user (userrname, password, role_id) VALUES (?, ?, ?)";
+        PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, user.getUserName());
+        statement.setString(2, user.getPassword());
+        statement.setInt(3, user.getRole_id());
+        statement.executeUpdate();
+
+        // Lấy id vừa tạo
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            int generatedId = generatedKeys.getInt(1);
+            user.setId(generatedId);  // Lưu id vào user
+        }
+
+        statement.close();
+        con.close();
+    }
+
+    // Lấy tất cả người dùng
+    public ArrayList<User> getAll() throws SQLException {
+        Connection con = getConnection();
+        ArrayList<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM user";
+        PreparedStatement statement = con.prepareStatement(sql);
+        ResultSet rs = statement.executeQuery();
+        while (rs.next()) {
+            userList.add(getEntityFromResultSet(rs));
+        }
+        return userList;
     }
 }

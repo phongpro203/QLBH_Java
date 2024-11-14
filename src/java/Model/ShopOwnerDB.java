@@ -61,6 +61,21 @@ public class ShopOwnerDB extends DBContext<ShopOwner> {
         statement.setInt(5, shopowner.getAddress_id());
         statement.setInt(6, shopowner.getUser_id());
         statement.executeUpdate();
-
+    }
+    public ArrayList<ShopOwner> getAll() throws SQLException {
+        Connection con = getConnection();
+        ArrayList<ShopOwner> shopOwnerList = new ArrayList<>();
+        String sql = "SELECT * FROM shop_owner";
+        PreparedStatement statement = con.prepareStatement(sql);
+        ResultSet rs = statement.executeQuery();
+        while (rs.next()) {
+            shopOwnerList.add(getEntityFromResultSet(rs));
+        }
+        return shopOwnerList;
+    }
+    public ShopOwner find(int id)
+    {
+        String sql = "SELECT * FROM shop_owner WHERE id = ?";
+        return findById(id, sql);
     }
 }

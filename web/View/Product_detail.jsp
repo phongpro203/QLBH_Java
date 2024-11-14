@@ -134,7 +134,7 @@
                 <span class="product-price"> <%= formattedGia %>đ</span>
               </div>
               <div class="product__detail">
-                <span class="product-title">Tên cửa hàng: đồ chơi</span> <a class="product-shop" href="">Xem cửa hàng</a>
+                  <span class="product-title">Tên cửa hàng: đồ chơi</span> <a class="product-shop" href="${pageContext.request.contextPath}/ViewShop?id=<%= goods.getShopOwnerId() %>">Xem cửa hàng</a>
               </div>
               <div class="product__detail">
                 <span class="product-title">Chi tiết sản phẩm:</span>

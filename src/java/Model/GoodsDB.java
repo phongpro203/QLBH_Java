@@ -53,6 +53,10 @@ public class GoodsDB extends DBContext<Goods> {
         String sql = "SELECT * FROM goods";
         return findAll(sql);
     }
+    public List<Goods> findAllGoodsByShop(int id) {
+        String sql = "SELECT * FROM goods where shop_owner_id = "+id;
+        return findAll(sql);
+    }
     public Goods find(int id)
     {
         String sql = "SELECT * FROM goods WHERE id = ?";

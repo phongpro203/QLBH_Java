@@ -4,20 +4,24 @@
  */
 package Controller;
 
+import Model.AddressDB;
+import Model.Goods;
+import Model.GoodsDB;
+import Model.ShopOwner;
+import Model.ShopOwnerDB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author kohakuta
+ * @author Admin
  */
-@WebServlet("/Seller")
-public class SellerServlet extends HttpServlet {
+public class ViewShopServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +40,10 @@ public class SellerServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SellerServlet</title>");            
+            out.println("<title>Servlet ViewShopServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SellerServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ViewShopServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,7 +61,21 @@ public class SellerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        int id = Integer.parseInt(request.getParameter("id"));
+        ShopOwnerDB shopDB = new ShopOwnerDB();
+        ShopOwner shop = shopDB.find(id);
+        request.setAttribute("shop", shop);
+        //Tìm địa chỉ shop
+        AddressDB address = new AddressDB();
+        String shopAddress = address.getDiaChiById(shop.getAddress_id()).getDiaChi();
+        request.setAttribute("shopAddress", shopAddress);
+        //tìm mặt hàng của shop
+        GoodsDB goodDB = new GoodsDB();
+        List<Goods> goodsList = goodDB.findAllGoodsByShop(id);
+        
+        // Chuyển danh sách sản phẩm vào trong request
+        request.setAttribute("goodsList", goodsList);
+        request.getRequestDispatcher("View/View_Shop.jsp").forward(request, response);
     }
 
     /**

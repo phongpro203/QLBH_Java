@@ -41,5 +41,10 @@ public class Address {
 
     public String getSonha() { return sonha; }
     public void setSonha(String sonha) { this.sonha = sonha; }
+    
+    public String getDiaChi()
+    {
+        return this.sonha +", "+ this.xaphuong +", "+ this.quanhuyen +", "+ this.tinhthanh;
+    }
 }
 

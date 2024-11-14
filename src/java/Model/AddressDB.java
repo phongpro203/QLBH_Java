@@ -73,5 +73,12 @@ public class AddressDB extends DBContext<Address> {
                 throw new SQLException("Thêm địa chỉ không thành công, không lấy được ID.");
             }
         }
+        
     }
+    public Address getDiaChiById(int id) {
+
+        String sql = "SELECT * FROM address WHERE id = ?";
+        return findById(id, sql);
+    }
+    
 }

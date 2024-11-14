@@ -12,6 +12,10 @@
         <servlet-name>ProductDetail</servlet-name>
         <servlet-class>Controller.ProductDetailServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ViewShop</servlet-name>
+        <servlet-class>Controller.ViewShopServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Goods</servlet-name>
         <url-pattern>/Goods</url-pattern>
@@ -23,6 +27,10 @@
     <servlet-mapping>
         <servlet-name>ProductDetail</servlet-name>
         <url-pattern>/ProductDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewShop</servlet-name>
+        <url-pattern>/ViewShop</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

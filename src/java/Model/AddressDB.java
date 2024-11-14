@@ -22,7 +22,7 @@ public class AddressDB extends DBContext<Address> {
         pstmt.setString(4, address.getSonha());
         // Nếu đây là câu lệnh update, thêm id ở vị trí cuối cùng
         if (address.getId()!= 0) {
-            pstmt.setInt(7, address.getId());
+            pstmt.setInt(7, address.getId()); 
         }
     }
 

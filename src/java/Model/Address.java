@@ -13,7 +13,7 @@ public class Address {
     private String tinhthanh;
     private String xaphuong;
     private String quanhuyen;
-    private String sonha;
+    private String sonha; 
 
     public Address() {
     }

@@ -48,7 +48,7 @@ public class SellerSignUpDB extends DBContext<SellerSignUp> {
         while (rs.next()) {
             sellerList.add(getEntityFromResultSet(rs));
         }
-        return sellerList;
+        return sellerList; 
     }
     public void insert(SellerSignUp seller) throws SQLException {
         Connection con = getConnection();

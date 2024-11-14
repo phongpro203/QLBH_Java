@@ -413,7 +413,7 @@
                   <li
                     class="header__navbar-item header__navbar-item--hasqr header__navbar-item--separate"
                   >
-                    Vào cửa hàng trên ứng dụng
+                      Vào cửa hàng trên ứng dụng
                   </li>
                   <li class="header__navbar-item">
                     <span class="header__navbar-title--nopoiter">Kết nối</span>
@@ -433,7 +433,7 @@
                 <i class="fa fa-sign-in" aria-hidden="true"></i>
             </li>
             <li class="header__navbar-item header__navbar-item--bold header__navbar-item--separate">
-                Đăng kí
+                <a style="    text-decoration: none; color: white;" href="View/signup_form.jsp" target="target">Đăng ký</a>
             </li>
             <li class="header__navbar-item header__navbar-item--bold">
                 <a style="    text-decoration: none; color: white;" href="View/login_form.jsp" target="target">Đăng nhập</a>

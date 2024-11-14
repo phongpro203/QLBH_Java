@@ -120,7 +120,7 @@
         </form>
         <div class="signup">
             <p>Không có tài khoản?</p>
-            <a href="#">ĐĂNG KÝ NGAY</a>
+            <a href="signup_form.jsp">ĐĂNG KÝ NGAY</a>
         </div>
     </div>
 </body>

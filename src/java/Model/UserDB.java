@@ -81,7 +81,7 @@ public class UserDB extends DBContext<User> {
             int generatedId = generatedKeys.getInt(1);
             user.setId(generatedId);  // Lưu id vào user
         }
-
+ 
         statement.close();
         con.close();
     }

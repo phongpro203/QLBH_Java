@@ -15,7 +15,7 @@ public class User {
     private int role_id;
 
     public User() {
-    }
+    } 
 
     public User(int id, String userName, String password, int role_id) {
         this.id = id;

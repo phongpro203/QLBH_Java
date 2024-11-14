@@ -10,7 +10,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="../assets/css/base.css" />
-        <title>Đăng Ký</title>
+        <title>Đăng Ký</title> 
        
         <style>
             body {

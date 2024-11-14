@@ -78,7 +78,7 @@
                 min-width: 1232px;
                 margin: 0 auto;
             }
-        </style>
+        </style> 
     </head>
     <body>
         <div class="app">

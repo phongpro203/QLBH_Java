@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="../assets/css/base.css" />
         <title>Đăng Ký</title> 
        
-        <style>
+        <style> 
             body {
                 margin: 0;
                 display: flex;

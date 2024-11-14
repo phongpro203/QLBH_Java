@@ -12,7 +12,7 @@ import java.util.List;
 /**
  *
  * @author kohakuta
- */
+ */ 
 public class AddressDB extends DBContext<Address> {
     @Override
     protected void setParametersForInsertOrUpdate(PreparedStatement pstmt, Address address) throws SQLException {

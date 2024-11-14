@@ -14,7 +14,7 @@ public class Address {
     private String xaphuong;
     private String quanhuyen;
     private String sonha; 
-
+ 
     public Address() {
     }
 

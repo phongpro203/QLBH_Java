@@ -20,7 +20,7 @@ public class SellerSignUp {
 
     public SellerSignUp() {
     } 
-
+ 
     public SellerSignUp(int id, String tenshop, String tenchushop, String sdt, String masothue, int address_id, int user_id) {
         this.id = id;
         this.tenshop = tenshop;

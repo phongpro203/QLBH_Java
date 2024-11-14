@@ -14,7 +14,7 @@ import java.util.List;
 /**
  *
  * @author kohakuta
- */
+ */ 
 public class SellerSignUpDB extends DBContext<SellerSignUp> {
     @Override
     protected void setParametersForInsertOrUpdate(PreparedStatement pstmt, SellerSignUp seller) throws SQLException {

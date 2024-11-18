@@ -16,6 +16,14 @@
         <servlet-name>ViewShop</servlet-name>
         <servlet-class>Controller.ViewShopServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Delivery</servlet-name>
+        <servlet-class>Controller.DeliveryServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BuyingProcess</servlet-name>
+        <servlet-class>Controller.BuyingProcessServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Goods</servlet-name>
         <url-pattern>/Goods</url-pattern>
@@ -31,6 +39,14 @@
     <servlet-mapping>
         <servlet-name>ViewShop</servlet-name>
         <url-pattern>/ViewShop</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Delivery</servlet-name>
+        <url-pattern>/Delivery</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BuyingProcess</servlet-name>
+        <url-pattern>/BuyingProcess</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

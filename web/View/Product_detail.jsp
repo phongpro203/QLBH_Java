@@ -25,7 +25,7 @@
 <style>
     .app-content {
       margin-top: 20px;
-      min-height: 100vh;
+       min-height: 100vh;
     }
     .home-product__img {
       padding-top: 100%;
@@ -118,6 +118,7 @@
                   int gia = (int) (goods.getGia() - (goods.getGia() * (double) goods.getGiamGia()) / 100);
                   NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
                   String formattedGia = currencyFormat.format(gia);
+                  String tenShop = (String)request.getAttribute("tenShop");
           %>
           <!--Ảnh-->
         <div class="grid__row app-content">
@@ -134,7 +135,7 @@
                 <span class="product-price"> <%= formattedGia %>đ</span>
               </div>
               <div class="product__detail">
-                  <span class="product-title">Tên cửa hàng: đồ chơi</span> <a class="product-shop" href="${pageContext.request.contextPath}/ViewShop?id=<%= goods.getShopOwnerId() %>">Xem cửa hàng</a>
+                  <span class="product-title">Tên cửa hàng: </span> <%= tenShop %> <a class="product-shop" href="${pageContext.request.contextPath}/ViewShop?id=<%= goods.getShopOwnerId() %>">Xem cửa hàng</a>
               </div>
               <div class="product__detail">
                 <span class="product-title">Chi tiết sản phẩm:</span>
@@ -143,10 +144,12 @@
               <div class="product__detail">
                 <span class="product-title">Thể loại:</span>  <%= goods.getChungloai()%>
               </div>
-              <form action="" method="post">
+              <form action="${pageContext.request.contextPath}/BuyingProcess" method="post">
                   <div class="product-quality">
                 <span class="product-title">Số lượng: </span>
                 <input type="number" class="product--quality-input" name="quality"/>
+                <input type="hidden" name="id_goods" value="<%= goods.getId()%>" />
+                <input type="hidden" name="id_shop" value="<%= goods.getShopOwnerId() %>" />
               </div>
               <div class="product-buy">
                 <button class="product-buy-button">Mua hàng</button>

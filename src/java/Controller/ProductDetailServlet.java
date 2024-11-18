@@ -6,6 +6,8 @@ package Controller;
 
 import Model.Goods;
 import Model.GoodsDB;
+import Model.ShopOwner;
+import Model.ShopOwnerDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -60,6 +62,10 @@ public class ProductDetailServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         GoodsDB goodDB = new GoodsDB();
         Goods goods = goodDB.find(id);
+        ShopOwnerDB shopDB = new ShopOwnerDB();
+        ShopOwner shop = shopDB.find(goods.getShopOwnerId());
+        String tenShop = shop.getTenshop();
+        request.setAttribute("tenShop", tenShop );
         request.setAttribute("goods", goods);
         request.getRequestDispatcher("View/Product_detail.jsp").forward(request, response);
     }

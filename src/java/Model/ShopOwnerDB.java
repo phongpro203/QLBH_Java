@@ -38,7 +38,7 @@ public class ShopOwnerDB extends DBContext<ShopOwner> {
         shopowner.setSdt(rs.getString("sdt"));
         shopowner.setMasothue(rs.getString("masothue"));
         shopowner.setAddress_id(rs.getInt("address_id"));
-        shopowner.setAddress_id(rs.getInt("user_id"));
+        shopowner.setUser_id(rs.getInt("user_id"));
         // Thêm các thuộc tính khác của shop_owner nếu có
         return shopowner;
     }

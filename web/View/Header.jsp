@@ -486,7 +486,7 @@
                   </button></a>
                 </div>
                 <div class="header__cart">
-                  <a href="#"><div class="header__cart-hover">
+                  <a href="${pageContext.request.contextPath}/Delivery"><div class="header__cart-hover">
                     <i class="header__cart-icon fa fa-truck" aria-hidden="true"></i>
                   </div>
                 </div></a>

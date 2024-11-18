@@ -81,4 +81,52 @@ public class AddressDB extends DBContext<Address> {
         return findById(id, sql);
     }
     
+    public int[] getAddresses(int shopperId, int shopOwnerId) {
+        // Kết quả trả về (address_start_id, address_end_id)
+        int[] addresses = new int[2];
+
+        // Chuỗi kết nối cơ sở dữ liệu
+
+        // Câu lệnh SQL
+        String sql = """
+            SELECT 
+                a1.id AS address_start_id, 
+                a2.id AS address_end_id
+            FROM 
+                shop_owner so
+            JOIN 
+                address a1 ON a1.id = so.address_id
+            JOIN 
+                shopper s ON s.id = ?
+            JOIN 
+                address a2 ON a2.id = s.address_id
+            WHERE 
+                so.id = ?;
+            """;
+
+        try (
+            // Kết nối cơ sở dữ liệu
+            Connection conn = getConnection();
+            // Chuẩn bị câu truy vấn
+            PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+            // Gán giá trị cho các tham số `?`
+            stmt.setInt(1, shopperId);
+            stmt.setInt(2, shopOwnerId);
+
+            // Thực thi câu truy vấn
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    // Lấy dữ liệu từ cột và gắn vào mảng
+                    addresses[0] = rs.getInt("address_start_id");
+                    addresses[1] = rs.getInt("address_end_id");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return addresses;
+    }
+    
 }

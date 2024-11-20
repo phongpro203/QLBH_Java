@@ -76,15 +76,54 @@ public class ReportServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        int id = Integer.parseInt(request.getParameter("id_order"));
-        String danhgia = request.getParameter("report");
-        OrderDB orderDB = new OrderDB();
-        Order order = orderDB.find(id);
-        ReportDB reportDB = new ReportDB();
-        Report report = new Report(0,order.getShopperId(),order.getShopOwnerId(),order.getGoodsId() ,danhgia);
-        reportDB.insertReport(report);
-        orderDB.updateTinhTrangOrder(id, "Đã đánh giá");
-        response.sendRedirect("Delivery");
+        String action = request.getParameter("action");
+        switch (action) {
+            case "danhgia": {
+                // Lấy tham số từ request
+                int id = Integer.parseInt(request.getParameter("id_order"));
+                String danhgia = request.getParameter("report");
+
+                // Khởi tạo các DB xử lý
+                OrderDB orderDB = new OrderDB();
+                ReportDB reportDB = new ReportDB();
+
+                // Tìm Order theo ID
+                Order order = orderDB.find(id);
+
+                // Tạo Report mới và thêm vào CSDL
+                Report report = new Report(0, order.getShopperId(), order.getShopOwnerId(), order.getGoodsId(), danhgia);
+                reportDB.insertReport(report);
+
+                // Cập nhật trạng thái đơn hàng
+                orderDB.updateTinhTrangOrder(id, "Đã đánh giá");
+
+                // Chuyển hướng sau khi xử lý
+                response.sendRedirect("Delivery");
+                break;
+            }
+            case "nhanhang": {
+                // Lấy tham số từ request
+                int id = Integer.parseInt(request.getParameter("id_order"));
+
+                // Khởi tạo các DB xử lý
+                OrderDB orderDB = new OrderDB();
+
+                // Tìm Order theo ID
+                Order order = orderDB.find(id);
+
+                // Cập nhật trạng thái đơn hàng
+                orderDB.updateTinhTrangOrder(id, "Đã giao");
+
+                // Chuyển hướng sau khi xử lý
+                response.sendRedirect("Delivery");
+                break;
+            }
+
+            default:
+                // Trường hợp action không hợp lệ
+                response.sendRedirect("ErrorPage.jsp"); // Hoặc xử lý khác tùy nhu cầu
+                break;
+        }
     }
 
     /**

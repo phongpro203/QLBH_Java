@@ -461,30 +461,33 @@
     </c:if>
               </nav>
 
-              <div class="header-with-search">
-                  <a href="${pageContext.request.contextPath}/Goods">
-                      <div class="header__logo">
-                          <i class="logo fa fa-shopping-bag" aria-hidden="true"></i>
-                          <span class="text-logo">Shop</span>
-                      </div>
-                  </a>
-                <div class="header__search">
-                  <div class="header__search-input-warp">
-                    <input
-                      type="text"
-                      class="header__search-input"
-                      placeholder="Tìm kiếm sản phẩm"
-                    />
-                    
-                  </div>
-                  <div class="header__search-selection">          
-                  </div>
-                  <a href="#"><button class="header__search-btn">
-                    <i
-                      class="header__search-btn-icon fa-solid fa-magnifying-glass"
-                    ></i>
-                  </button></a>
-                </div>
+                <div class="header-with-search">
+                    <a href="${pageContext.request.contextPath}/Goods">
+                        <div class="header__logo">
+                            <i class="logo fa fa-shopping-bag" aria-hidden="true"></i>
+                            <span class="text-logo">Shop</span>
+                        </div>
+                    </a>
+          
+                        <form action="${pageContext.request.contextPath}/Goods" method="get" class="header__search">
+                            <div class="header__search-input-warp">
+                                <input
+                                    type="text"
+                                    class="header__search-input"
+                                    placeholder="Tìm kiếm sản phẩm"
+                                    name="chungloai"
+                                    />
+
+                            </div>
+                            <div class="header__search-selection">          
+                            </div>
+                            <button class="header__search-btn">
+                                <i
+                                    class="header__search-btn-icon fa-solid fa-magnifying-glass"
+                                    ></i>
+                            </button>
+                        </form>
+          
                 <div class="header__cart">
                   <a href="${pageContext.request.contextPath}/Delivery"><div class="header__cart-hover">
                     <i class="header__cart-icon fa fa-truck" aria-hidden="true"></i>

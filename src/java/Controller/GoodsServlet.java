@@ -59,10 +59,17 @@ public class GoodsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         GoodsDB goodDB = new GoodsDB();
-        List<Goods> goodsList = goodDB.findAllGoods();
+        if(request.getParameter("chungloai") != null)
+        {
+            List<Goods> goodsList = goodDB.findAllGoodsByChungLoai(request.getParameter("chungloai"));
+            request.setAttribute("goodsList", goodsList);
+        }
+        else {
+            List<Goods> goodsList = goodDB.findAllGoods();
+            request.setAttribute("goodsList", goodsList);
+        }
         
-        // Chuyển danh sách sản phẩm vào trong request
-        request.setAttribute("goodsList", goodsList);
+    
         
         // Chuyển tiếp yêu cầu tới trang JSP
         request.getRequestDispatcher("View/index.jsp").forward(request, response);

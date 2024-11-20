@@ -133,7 +133,7 @@
                   Collections.sort(orderList, new Comparator<Order>() {
                       @Override
                       public int compare(Order o1, Order o2) {
-                          List<String> priority = Arrays.asList("Chờ lấy hàng","Chờ giao hàng","Đang giao hàng", "Đã giao", "Đã đánh giá");
+                          List<String> priority = Arrays.asList("Chờ lấy hàng","Chờ giao hàng","Đang giao hàng","Giao hàng thành công", "Đã giao", "Đã đánh giá");
                           return Integer.compare(priority.indexOf(o1.getTinhTrang()), priority.indexOf(o2.getTinhTrang()));
                       }
                   });
@@ -183,6 +183,23 @@
               Thành tiền: <span class="price__css"><%=formattedtt  %>đ</span>
             </div>
           </div>
+            <%
+                  if ("Giao hàng thành công".equals(order.getTinhTrang())) {
+              %>
+              <div class="report">
+                  <div class="report__box">
+                      <form action="${pageContext.request.contextPath}/Report" method="post">
+                          <input type="hidden" name="id_order" value="<%= order.getId() %>" />
+                          <input type="hidden" name="action" value="nhanhang" />
+                          <div class="form">
+                              <button  style="padding: 0 20px;" class="btn report__box-btn">Đã nhận được hàng</button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+              <%
+              }
+          %>
               <%
                   if ("Đã giao".equals(order.getTinhTrang())) {
               %>
@@ -196,6 +213,7 @@
                               ></textarea>
                           <br />
                           <input type="hidden" name="id_order" value="<%= order.getId() %>" />
+                          <input type="hidden" name="action" value="danhgia" />
                           <div class="form">
                               <button class="btn report__box-btn">Gửi phản hồi</button>
                           </div>

@@ -1,5 +1,6 @@
 package Model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -59,12 +60,64 @@ public class OrderDB extends DBContext<Order> {
         return findAll(sql);
     }
 
+    public List<String[]> getOrdersWithNames() {
+    List<String[]> orders = new ArrayList<>();
+    String sql = """
+        SELECT
+            o.id,
+            g.tensp AS goods_name,    
+            s.hoten AS shopper_name,     
+            so.tenshop AS shop_owner_name, 
+            sh.hoten AS shipper_name,     
+            a_start.tinhthanh AS address_start_id,  
+            a_end.tinhthanh AS address_end_id,
+            o.tinhtrang,
+            o.ngaydat,
+            o.ngaygiao,
+            o.thanhtien
+        FROM
+            `order` o
+        JOIN goods g ON o.goods_id = g.id
+        JOIN shopper s ON o.shopper_id = s.id
+        JOIN shop_owner so ON o.shop_owner_id = so.id
+        JOIN shipper sh ON o.shipper_id = sh.id
+        JOIN address a_start ON o.address_start_id = a_start.id
+        JOIN address a_end ON o.address_end_id = a_end.id
+    """;
+
+    try (
+        Connection conn = getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+    ) {
+        while (rs.next()) {
+            String[] order = new String[11]; // Có 10 cột được select
+            order[0] = String.valueOf(rs.getInt("id")); // Lấy ID đơn hàng
+            order[1] = rs.getString("goods_name"); // Tên sản phẩm
+            order[2] = rs.getString("shopper_name"); // Người mua hàng
+            order[3] = rs.getString("shop_owner_name"); // Chủ cửa hàng
+            order[4] = rs.getString("shipper_name"); // Người giao hàng
+            order[5] = rs.getString("address_start_id"); // Địa chỉ bắt đầu
+            order[6] = rs.getString("address_end_id"); // Địa chỉ kết thúc
+            order[7] = rs.getString("tinhtrang"); // Tình trạng đơn hàng
+            order[8] = rs.getString("ngaydat"); // Ngày đặt
+            order[9] = rs.getString("ngaygiao"); // Ngày giao
+            order[10] = rs.getString("thanhtien");
+            orders.add(order);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return orders;
+}
+
+
     // Lấy đơn hàng theo ID
     public Order find(int id) {
         String sql = "SELECT * FROM `order` WHERE id = ?";
         return findById(id, sql);
     }
-    
+
     public List<Order> findByShopper(int id) {
         String sql = "SELECT * FROM `order` WHERE shopper_id = " + id;
         return findAll(sql);
@@ -99,4 +152,5 @@ public class OrderDB extends DBContext<Order> {
             e.printStackTrace();
         }
     }
+    
 }

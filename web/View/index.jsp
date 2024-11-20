@@ -389,7 +389,7 @@
                                 </c:if>
                                 <c:if test="${sessionScope.role_id == 1}">
                                     <li class="category-item">
-                                        <a href="" class="category-item__link">Quản lý tài khoản</a>
+                                        <a href="View/admin_form.jsp?ql=tk" class="category-item__link">Quản lý tài khoản</a>
                                     </li>
                                 </c:if>
                         </nav>

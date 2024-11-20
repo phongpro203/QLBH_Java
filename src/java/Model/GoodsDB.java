@@ -58,6 +58,11 @@ public class GoodsDB extends DBContext<Goods> {
         String sql = "SELECT * FROM goods where shop_owner_id = " + id;
         return findAll(sql);
     }
+    
+    public List<Goods> findAllGoodsByChungLoai(String CL) {
+        String sql = "SELECT * FROM goods where chungloai like '%" + CL+"%'";
+        return findAll(sql);
+    }
 
     public List<Goods> searchGoodsByShopAndName(int shopOwnerId, String search) {
         String sql = "SELECT * FROM goods WHERE shop_owner_id = ? AND tensp LIKE ?";

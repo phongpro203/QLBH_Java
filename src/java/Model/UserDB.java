@@ -98,4 +98,9 @@ public class UserDB extends DBContext<User> {
         }
         return userList;
     }
+    
+    public void deleteUser(int id) {
+        String sql = "DELETE FROM user WHERE id = ?";
+        delete(id, sql);
+    }
 }

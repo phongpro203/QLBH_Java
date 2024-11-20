@@ -64,6 +64,11 @@ public class OrderDB extends DBContext<Order> {
         String sql = "SELECT * FROM `order` WHERE id = ?";
         return findById(id, sql);
     }
+    
+    public List<Order> findByShopper(int id) {
+        String sql = "SELECT * FROM `order` WHERE shopper_id = " + id;
+        return findAll(sql);
+    }
 
 
     // Thêm đơn hàng mới

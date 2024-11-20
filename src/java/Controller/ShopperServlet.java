@@ -4,26 +4,25 @@
  */
 package Controller;
 
-import Model.Goods;
-import Model.GoodsDB;
+import Model.Address;
+import Model.AddressDB;
+import Model.ShopOwner;
 import Model.Shopper;
-import Model.Order;
-import Model.OrderDB;
 import Model.ShopperDB;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Admin
+ * @author kohakuta
  */
-public class DeliveryServlet extends HttpServlet {
+@WebServlet("/Shopper")
+public class ShopperServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +41,10 @@ public class DeliveryServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DeliveryServlet</title>");            
+            out.println("<title>Servlet ShopperServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DeliveryServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ShopperServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,25 +62,7 @@ public class DeliveryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        if (session.getAttribute("id") != null) {
-            int user_id = (int) session.getAttribute("id");
-            ShopperDB shoperDB = new ShopperDB();
-            Shopper shopper = shoperDB.findByUser(user_id);
-            OrderDB orderDB = new OrderDB();
-            List<Order> orderList = orderDB.findByShopper(shopper.getId());
-            String orderId = request.getParameter("orderId");
-            String isFeedback = request.getParameter("isFeedback");
-
-            // Nếu có tham số isFeedback và orderId, sẽ hiển thị phần phản hồi cho đơn hàng đó
-            request.setAttribute("orderId", orderId);
-            request.setAttribute("isFeedback", isFeedback);
-            request.setAttribute("orderList", orderList);
-            request.getRequestDispatcher("View/delivery.jsp").forward(request, response);
-        }
-        else {
-            response.sendRedirect("View/login_form.jsp");
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -92,10 +73,54 @@ public class DeliveryServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private ShopperDB shopperDB = new ShopperDB();
+    private AddressDB addressDB = new AddressDB();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        // Lấy thông tin từ form
+        String hoten = request.getParameter("hoten");
+        String sdt = request.getParameter("sdt");
+
+        // Lấy thông tin địa chỉ từ form
+        String tinhthanh = request.getParameter("tinhthanh");
+        String xaphuong = request.getParameter("xaphuong");
+        String quanhuyen = request.getParameter("quanhuyen");
+        String sonha = request.getParameter("sonha");
+
+        try {
+            // 1. Thêm địa chỉ vào bảng address và lấy address_id
+            Address address = new Address();
+            address.setTinhthanh(tinhthanh);
+            address.setXaphuong(xaphuong);
+            address.setQuanhuyen(quanhuyen);
+            address.setSonha(sonha);
+            int address_id = addressDB.insert(address);
+
+            // 2. Lấy user_id từ session sau khi đăng ký thành công
+            Integer userId = (Integer) request.getSession().getAttribute("user_id");
+            if (userId == null) {
+                response.sendRedirect("View/Shopper.jsp?error=userid is null.");
+                return;
+            }
+            int user_id = userId.intValue();
+
+            // 3. Thêm người bán hàng với address_id và user_id vừa lấy
+            Shopper shopper = new Shopper();
+            shopper.setHoten(hoten);
+            shopper.setSdt(sdt);
+            shopper.setAddress_id(address_id);
+            shopper.setUser_id(user_id);
+
+            shopperDB.insert(shopper);
+
+            response.sendRedirect("View/Shopper_form.jsp"); // Điều hướng đến trang thành công
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("View/Shopper.jsp?error=Không thể thêm thông tin");
+        }
     }
 
     /**

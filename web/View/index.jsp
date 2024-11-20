@@ -379,7 +379,7 @@
                                 </li>
                                 <c:if test="${sessionScope.role_id == 3}">
                                     <li class="category-item">
-                                        <a href="" class="category-item__link">Quản lý bán hàng</a>
+                                        <a href="View/ShopOwnerDashboard.jsp" class="category-item__link">Quản lý bán hàng</a>
                                     </li>
                                 </c:if>
                                 <c:if test="${sessionScope.role_id == 4}">

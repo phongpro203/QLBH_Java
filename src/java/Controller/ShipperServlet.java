@@ -4,26 +4,22 @@
  */
 package Controller;
 
-import Model.Goods;
-import Model.GoodsDB;
-import Model.Shopper;
-import Model.Order;
-import Model.OrderDB;
-import Model.ShopperDB;
+import Model.Shipper;
+import Model.ShipperDB;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Admin
+ * @author kohakuta
  */
-public class DeliveryServlet extends HttpServlet {
+@WebServlet("/Shipper")
+public class ShipperServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +38,10 @@ public class DeliveryServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DeliveryServlet</title>");            
+            out.println("<title>Servlet ShipperServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DeliveryServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ShipperServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,25 +59,7 @@ public class DeliveryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        if (session.getAttribute("id") != null) {
-            int user_id = (int) session.getAttribute("id");
-            ShopperDB shoperDB = new ShopperDB();
-            Shopper shopper = shoperDB.findByUser(user_id);
-            OrderDB orderDB = new OrderDB();
-            List<Order> orderList = orderDB.findByShopper(shopper.getId());
-            String orderId = request.getParameter("orderId");
-            String isFeedback = request.getParameter("isFeedback");
-
-            // Nếu có tham số isFeedback và orderId, sẽ hiển thị phần phản hồi cho đơn hàng đó
-            request.setAttribute("orderId", orderId);
-            request.setAttribute("isFeedback", isFeedback);
-            request.setAttribute("orderList", orderList);
-            request.getRequestDispatcher("View/delivery.jsp").forward(request, response);
-        }
-        else {
-            response.sendRedirect("View/login_form.jsp");
-        }
+        processRequest(request, response);
     }
 
     /**
@@ -92,10 +70,33 @@ public class DeliveryServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private ShipperDB shipperDB = new ShipperDB();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        // Lấy thông tin từ form
+        String hoten = request.getParameter("hoten");
+        String sdt = request.getParameter("sdt");
+        try{
+            Shipper shipper = new Shipper();
+            
+            Integer userId = (Integer) request.getSession().getAttribute("user_id");
+            if (userId == null) {
+                response.sendRedirect("View/Shipper.jsp?error=userid is null.");
+                return;
+            }
+            int user_id = userId.intValue();
+            shipper.setHoten(hoten);
+            shipper.setSdt(sdt);
+            shipper.setUser_id(user_id);
+            shipperDB.insert(shipper);
+            response.sendRedirect("View/Shipper_form.jsp"); // Điều hướng đến trang thành công
+        }catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("View/Shipper.jsp?error=Không thể thêm thông tin");
+        }
     }
 
     /**

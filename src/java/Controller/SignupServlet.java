@@ -83,6 +83,8 @@ public class SignupServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         // Lấy dữ liệu từ request
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -103,8 +105,19 @@ public class SignupServlet extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("user_id", newuser.getId());
                 // Chuyển hướng đến login_form.jsp
-                response.sendRedirect("View/ShopOwner.jsp");
-
+                switch (newuser.getRole_id()) {
+                    case 2:
+                        response.sendRedirect("View/Shopper.jsp");
+                        break;
+                    case 3:
+                        response.sendRedirect("View/ShopOwner.jsp");
+                        break;
+                    case 4:
+                        response.sendRedirect("View/Shipper.jsp");
+                        break;
+                    default:
+                        break;
+                }
             }
         } catch (IOException | SQLException e) {
             response.sendRedirect("View/signup_form.jsp?error=invalid");

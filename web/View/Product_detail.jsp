@@ -147,9 +147,10 @@
               <form action="${pageContext.request.contextPath}/BuyingProcess" method="post">
                   <div class="product-quality">
                 <span class="product-title">Số lượng: </span>
-                <input type="number" class="product--quality-input" name="quality"/>
+                <input type="number" class="product--quality-input" name="quality" min="1" value="1"/>
                 <input type="hidden" name="id_goods" value="<%= goods.getId()%>" />
                 <input type="hidden" name="id_shop" value="<%= goods.getShopOwnerId() %>" />
+                <input type="hidden" name="price" value="<%= gia %>" />
               </div>
               <div class="product-buy">
                 <button class="product-buy-button">Mua hàng</button>

@@ -1,6 +1,6 @@
 <%-- 
-    Document   : seller_form
-    Created on : Nov 13, 2024, 6:10:58 PM
+    Document   : Shipper_form
+    Created on : Nov 18, 2024, 12:12:01 PM
     Author     : kohakuta
 --%>
 
@@ -9,9 +9,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Kênh người bán hàng</title>
+        <title>Kênh người giao hàng</title>
     </head>
     <body>
-        CHUWA LAMF  
+        <h1>Hello World!</h1>
     </body>
 </html>

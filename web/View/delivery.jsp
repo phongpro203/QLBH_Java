@@ -4,6 +4,17 @@
     Author     : Admin
 --%>
 
+<%@page import="java.util.Arrays"%>
+<%@page import="java.util.Comparator"%>
+<%@page import="java.util.Collections"%>
+<%@page import="Model.GoodsDB"%>
+<%@page import="Model.Order"%>
+<%@page import="Model.Goods"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.List"%>
+<%@page import="java.text.NumberFormat"%>
+<%@page import="java.util.Locale"%>
+<%@page import="java.util.Locale"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -108,47 +119,75 @@
     .btn__showbox {
       margin-right: 40px;
     }
+    .status__text {
+      color: #26aa99;
+    }
   </style>
   <body>
-    <div class="app-container">
-        <%@include file="Header.jsp" %>
-      <div class="grid app__content">
-        <h1 style="color: grey; font-weight: 300;">DANH SÁCH ĐƠN HÀNG ĐẶT MUA:</h1>
-        <div class="product">
-          <div
-            style="
-              border-bottom: 1px solid rgb(196, 196, 196);
-              margin-bottom: 20px;
-              margin-right: 30px;
-            "
-            class="alo"
+      <div class="app-container">
+          <%@include file="Header.jsp" %>
+          <div class="grid app__content">
+              <h1 style="color: grey; font-weight: 300;">DANH SÁCH ĐƠN HÀNG ĐẶT MUA:</h1>
+              <%
+                  List<Order> orderList = (List<Order>) request.getAttribute("orderList");
+                  Collections.sort(orderList, new Comparator<Order>() {
+                      @Override
+                      public int compare(Order o1, Order o2) {
+                          List<String> priority = Arrays.asList("Chờ giao hàng","Đang giao hàng", "Đã giao", "Đã đánh giá");
+                          return Integer.compare(priority.indexOf(o1.getTinhTrang()), priority.indexOf(o2.getTinhTrang()));
+                      }
+                  });
+
+                  if (orderList != null) {
+                      for (Order order : orderList) {
+                          GoodsDB goodsDB = new GoodsDB();
+                          Goods goods = goodsDB.find(order.getGoodsId());
+                          int gia = (int) (goods.getGia() - (goods.getGia() * (double) goods.getGiamGia()) / 100);
+                          int sl = order.getThanhTien() / gia;
+              %>
+              <div class="product">
+                  <div
+                      style="
+                      border-bottom: 1px solid rgb(196, 196, 196);
+                      margin-bottom: 20px;
+                      margin-right: 30px;
+                      "
+                      class="alo"
           >
             <div class="product__content">
               <div style="width: 100px">
                 <div
                   style="
-                    background-image: url('https://gamelandvn.com/wp-content/uploads/anh/2022/11/nahida-genshin-impact-thumbnail.webp');
+                    background-image: url('${pageContext.request.contextPath}/assets/image/<%= goods.getHinhanh() %>');
                   "
                   class="product__img"
                 ></div>
               </div>
               <div class="product__detail">
-                <div class="product__content-title">Card màn hình bala</div>
-                <div class="product__content__quantity">x1</div>
+                  <div class="product__content-title"><%= goods.getTensp() %></div>
+                <div class="product__content__quantity">x<%= sl %></div>
                 <div class="product__content__status">
-                  Trạng thái: <span class="status__text">Giao thành công</span>
+                    Trạng thái: <span class="status__text"><%= order.getTinhTrang() %></span>
                 </div>
               </div>
+              <%
+                  NumberFormat currencyFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
+                  String formattedGia = currencyFormat.format(gia);
+                  String formattedtt = currencyFormat.format(order.getThanhTien());
+              %>
               <div class="product__price">
-                <span class="price__css">9,000đ</span>
+                  <span class="price__css"><%= formattedGia%>đ</span>
               </div>
             </div>
             <div class="price">
-              Thành tiền: <span class="price__css">100.000đ</span>
+              Thành tiền: <span class="price__css"><%=formattedtt  %>đ</span>
             </div>
           </div>
+          <%
+              if("Đã giao".equals(order.getTinhTrang()))
+              {
+          %>
           <div class="report">
-              <c:if test="${param.isFeedback == 'true'}">
                   <div class="report__box">
               <form action="">
                 <textarea
@@ -161,13 +200,18 @@
                   <button class="btn report__box-btn">Gửi phản hồi</button>
                 </div>
               </form>
-            </div>
-              </c:if>
-            <div class="form" action="">
-                <a style="text-decoration: none;" class="btn btn__showbox" href="${pageContext.request.contextPath}/View/delivery.jsp?isFeedback=true">Phản hồi</a>
-            </div>
+                  </div>
           </div>
-        </div>
+          <%
+              }
+          %>
+              </div>
+              <%
+                                    }
+                                } else {
+                                %>
+                                <h1>Không có sản phẩm nào</h1>
+                                <% }%>
       </div>
     </div>
   </body>

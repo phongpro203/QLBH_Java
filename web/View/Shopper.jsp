@@ -1,16 +1,16 @@
 <%-- 
-    Document   : shopowner
-    Created on : Nov 13, 2024, 10:19:02 PM
+    Document   : Shopper
+    Created on : Nov 18, 2024, 1:41:46 PM
     Author     : kohakuta
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="vi">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="../assets/css/base.css" />
-        <title>Kênh người bán hàng</title>
+        <title>Kênh khách hàng</title>
         <style>
             .app{
                 margin: 0;
@@ -85,7 +85,7 @@
             .formable-onboarding{
                 min-height: calc(100vh - 56vh - 40px);
                 padding-bottom: 64px;
-                
+
             }
             .onboarding-layout{
                 max-width: none;
@@ -187,7 +187,7 @@
                 <div class="header">
                     <div class="header-wrapper">
                         <div class="header-logo">
-                            <span class="title">Đăng ký trở thành người bán hàng</span>
+                            <span class="title">Đăng ký thông tin</span>
                         </div>
                     </div>
                 </div>
@@ -202,23 +202,23 @@
                                     <div class="flow-content">
                                         <div class="flow-step-content">
                                             <div class="step-header">
-                                                <h1>Thông tin Shop</h1>
+                                                <h1>Thông tin khách hàng</h1>
                                             </div>
                                             <div class="step-content">
                                                 <div class="abstract-form">
-                                                    <form action="${pageContext.request.contextPath}/ShopOwner" method="post">
+                                                    <form action="${pageContext.request.contextPath}/Shopper" method="post">
                                                         <div class="formable-rendeber">
                                                             <div class="form-item">
                                                                 <div class="form-item_iner">
                                                                     <label class="form-label">
                                                                         <span class="eds-form-item__reqiured">*</span>
-                                                                        Tên Shop
+                                                                        Họ và Tên
                                                                     </label>
                                                                     <div class="form-item_control">
                                                                         <div class="form-item_content">
                                                                             <div class="formable-renderer">
                                                                                 <div class="form-input">
-                                                                                    <input type="text" name="tenshop" required>
+                                                                                    <input type="text" name="hoten" required>
                                                                                 </div>
                                                                             </div>
                                                                             <div data-v-547eeefc="" class="eds-form-item__extra"><!----> </div>
@@ -226,23 +226,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="form-item">
-                                                                <div class="form-item_iner">
-                                                                    <label class="form-label">
-                                                                        <span class="eds-form-item__reqiured">*</span>
-                                                                        Tên Chủ Shop
-                                                                    </label>
-                                                                    <div class="form-item_control">
-                                                                        <div class="form-item_content">
-                                                                            <div class="formable-renderer">
-                                                                                <div class="form-input">
-                                                                                    <input type="text" name="tenchushop" required>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            
                                                             <div class="form-item">
                                                                 <div class="form-item_iner">
                                                                     <label class="form-label">
@@ -260,23 +244,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="form-item">
-                                                                <div class="form-item_iner">
-                                                                    <label class="form-label">
-                                                                        <span class="eds-form-item__reqiured">*</span>
-                                                                        Mã Số Thuế
-                                                                    </label>
-                                                                    <div class="form-item_control">
-                                                                        <div class="form-item_content">
-                                                                            <div class="formable-renderer">
-                                                                                <div class="form-input">
-                                                                                    <input type="text" name="masothue">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                           
                                                             <div class="form-item">
                                                                 <div class="form-item_iner">
                                                                     <label class="form-label">
@@ -346,15 +314,16 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                </div>
-                                                <div class="form-item_control">
-                                                    <div class="form-item_content">
-                                                        <div class="formable-renderer">
-                                                            <button type="submit">Lưu</button>
+
+                                                        <div class="form-item_control">
+                                                            <div class="form-item_content">
+                                                                <div class="formable-renderer">
+                                                                    <button type="submit">Lưu</button>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                </form>
+                                                    </form>
+                                                </div>        
                                             </div>
                                         </div>
                                     </div>
@@ -364,10 +333,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
-    </div>
-
-</body>
+    </body>
 </html>

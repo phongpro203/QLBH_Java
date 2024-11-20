@@ -18,7 +18,7 @@ public class GoodsDB extends DBContext<Goods> {
         pstmt.setString(6, goods.getHinhanh());
         pstmt.setInt(7, goods.getShopOwnerId());
         pstmt.setInt(8, goods.getGiamGia());
-        
+
         // Nếu là update, thêm id ở vị trí cuối cùng
         if (goods.getId() != 0) {
             pstmt.setInt(9, goods.getId());
@@ -53,15 +53,31 @@ public class GoodsDB extends DBContext<Goods> {
         String sql = "SELECT * FROM goods";
         return findAll(sql);
     }
+
     public List<Goods> findAllGoodsByShop(int id) {
-        String sql = "SELECT * FROM goods where shop_owner_id = "+id;
+        String sql = "SELECT * FROM goods where shop_owner_id = " + id;
         return findAll(sql);
     }
-    public Goods find(int id)
-    {
+
+    public List<Goods> searchGoodsByShopAndName(int shopOwnerId, String search) {
+        String sql = "SELECT * FROM goods WHERE shop_owner_id = ? AND tensp LIKE ?";
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
+            pstmt.setInt(1, shopOwnerId);
+            pstmt.setString(2, "%" + search + "%");
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return getListFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public Goods find(int id) {
         String sql = "SELECT * FROM goods WHERE id = ?";
         return findById(id, sql);
     }
+
     public void updateGoods(Goods goods) {
         String sql = "UPDATE goods SET tensp = ?, chungloai = ?, chitiet = ?, gia = ?, soluong = ?, hinhanh = ?, shop_owner_id = ?, giam_gia = ? WHERE id = ?";
         update(goods, sql);

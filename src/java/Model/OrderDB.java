@@ -88,4 +88,15 @@ public class OrderDB extends DBContext<Order> {
         String sql = "DELETE FROM `order` WHERE id = ?";
         delete(id, sql);
     }
+
+    public void updateTinhTrangOrder(int id, String tinhTrang) {
+        String sql = "UPDATE `order` SET tinhtrang = ? WHERE id = ?";
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
+            pstmt.setString(1, tinhTrang);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

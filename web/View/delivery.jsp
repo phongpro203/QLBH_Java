@@ -183,26 +183,26 @@
               Thành tiền: <span class="price__css"><%=formattedtt  %>đ</span>
             </div>
           </div>
-          <%
-              if("Đã giao".equals(order.getTinhTrang()))
-              {
-          %>
-          <div class="report">
+              <%
+                  if ("Đã giao".equals(order.getTinhTrang())) {
+              %>
+              <div class="report">
                   <div class="report__box">
-              <form action="">
-                <textarea
-                  name="report"
-                  id=""
-                  class="report__box-text"
-                ></textarea>
-                <br />
-                <div class="form">
-                  <button class="btn report__box-btn">Gửi phản hồi</button>
-                </div>
-              </form>
+                      <form action="${pageContext.request.contextPath}/Report" method="post">
+                          <textarea
+                              name="report"
+                              id=""
+                              class="report__box-text"
+                              ></textarea>
+                          <br />
+                          <input type="hidden" name="id_order" value="<%= order.getId() %>" />
+                          <div class="form">
+                              <button class="btn report__box-btn">Gửi phản hồi</button>
+                          </div>
+                      </form>
                   </div>
-          </div>
-          <%
+              </div>
+              <%
               }
           %>
               </div>

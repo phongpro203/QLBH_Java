@@ -133,7 +133,7 @@
                   Collections.sort(orderList, new Comparator<Order>() {
                       @Override
                       public int compare(Order o1, Order o2) {
-                          List<String> priority = Arrays.asList("Chờ giao hàng","Đang giao hàng", "Đã giao", "Đã đánh giá");
+                          List<String> priority = Arrays.asList("Chờ lấy hàng","Chờ giao hàng","Đang giao hàng", "Đã giao", "Đã đánh giá");
                           return Integer.compare(priority.indexOf(o1.getTinhTrang()), priority.indexOf(o2.getTinhTrang()));
                       }
                   });

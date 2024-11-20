@@ -88,24 +88,33 @@
                 outline: none;
             }
             .form-input input{
-                font-size: 20px;
+                width: 300px;
+                padding: 6px;
+                font-size: 1.6rem;
+                align-items: center;
+                border: 1px solid rgba(0, 0, 0, .5);
+                border-radius: 5px;
+                box-shadow: inset 0 2px 0 rgba(0, 0, 0, .02);
             }
             .iner-item{
                 display: flex;
                 font-size: 15px;
                 align-items: center;
                 padding-bottom: 20px;
+                
             }
             button{
                 background-color: var(--primary--color--);
                 color: var(--white-color--);
                 border-radius: 4px;
                 padding: 10px 15px 10px 15px;
+                 min-width: 130px;
             }
             .Button{
                 padding-top: 20px;
                 text-align: center;
                 padding-bottom: 20px;
+               
             }
             .eds-form-item__reqiured{
                 color: red;
@@ -119,6 +128,7 @@
                 display: flex;
                 width: 1232px;
                 justify-content: center;
+                border-radius: 5px;
             }
         </style> 
     </head>

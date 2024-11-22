@@ -4,11 +4,7 @@
  */
 package Controller;
 
-import Model.Address;
-import Model.AddressDB;
-import Model.ShopOwner;
-import Model.Shopper;
-import Model.ShopperDB;
+import Model.OrderDB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -21,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author kohakuta
  */
-@WebServlet("/Shopper")
-public class ShopperServlet extends HttpServlet {
+@WebServlet("/OrderManagement")
+public class OrderManagementServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +37,10 @@ public class ShopperServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ShopperServlet</title>");            
+            out.println("<title>Servlet OrderManagementServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ShopperServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet OrderManagementServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -73,62 +69,52 @@ public class ShopperServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    private ShopperDB shopperDB = new ShopperDB();
-    private AddressDB addressDB = new AddressDB();
+    private final OrderDB orderDB = new OrderDB();
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
 
-        // Lấy thông tin từ form
-        String hoten = request.getParameter("hoten");
-        String sdt = request.getParameter("sdt");
-        String role = request.getParameter("role"); // Lấy role từ input hidden
+        switch (action) {
+            case "confirmOrder":
+                confirmOrder(request, response);
+                break;
+            case "retryDelivery":
+                retryDelivery(request, response);
+                break;
+            default:
+                response.sendRedirect("View/OrderManagement.jsp");
+        }
+    }
 
-        // Lấy thông tin địa chỉ từ form
-        String tinhthanh = request.getParameter("tinhthanh");
-        String xaphuong = request.getParameter("xaphuong");
-        String quanhuyen = request.getParameter("quanhuyen");
-        String sonha = request.getParameter("sonha");
-
+    private void retryDelivery(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
-            // 1. Thêm địa chỉ vào bảng address và lấy address_id
-            Address address = new Address();
-            address.setTinhthanh(tinhthanh);
-            address.setXaphuong(xaphuong);
-            address.setQuanhuyen(quanhuyen);
-            address.setSonha(sonha);
-            int address_id = addressDB.insert(address);
+            // Lấy order_id từ request
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
 
-            // 2. Lấy user_id từ session sau khi đăng ký thành công
-            Integer userId = (Integer) request.getSession().getAttribute("user_id");
-            if (userId == null) {
-                response.sendRedirect("View/Shopper.jsp?error=userid is null.");
-                return;
-            }
-            int user_id = userId.intValue();
-
-            // 3. Thêm khách hàng với address_id và user_id vừa lấy
-            Shopper shopper = new Shopper();
-            shopper.setHoten(hoten);
-            shopper.setSdt(sdt);
-            shopper.setAddress_id(address_id);
-            shopper.setUser_id(user_id);
-
-            shopperDB.insert(shopper);
-
-            // Điều hướng dựa trên role
-            if ("3".equals(role)) {
-                response.sendRedirect("View/ShopOwner.jsp"); // Vai trò người bán hàng
-            } else if ("4".equals(role)) {
-                response.sendRedirect("View/Shipper.jsp"); // Vai trò người giao hàng
-            } else {
-                response.sendRedirect("View/login_form.jsp"); // Mặc định
-            }
+            // Cập nhật trạng thái đơn hàng thành "Quán đã xác nhận đơn"
+            orderDB.updateTinhTrangOrder(orderId, "Chờ giao hàng");
+            response.sendRedirect("View/OrderManagement.jsp?success=retry_successful");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("View/Shopper.jsp?error=Không thể thêm thông tin");
+            response.sendRedirect("View/OrderManagement.jsp?error=retry_failed");
+        }
+    }
+
+    private void confirmOrder(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // Lấy order_id từ request
+            int orderId = Integer.parseInt(request.getParameter("orderId"));
+
+            // Cập nhật trạng thái đơn hàng thành "Quán đã xác nhận đơn"
+            orderDB.updateTinhTrangOrder(orderId, "Chờ giao hàng");
+            response.sendRedirect("View/OrderManagement.jsp?success=confirm_successful");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("View/OrderManagement.jsp?error=confirm_failed");
         }
     }
 

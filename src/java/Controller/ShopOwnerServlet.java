@@ -61,11 +61,84 @@ public class ShopOwnerServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        String action = request.getParameter("action");
+        if (action == null || action.isEmpty()) {
+            action = "viewAll"; // Mặc định hiển thị toàn bộ sản phẩm
+        }
+
+        switch (action) {
+            case "searchGoods":
+                searchGoods(request, response);
+                break;
+            case "viewAll":
+            default:
+                viewAllGoods(request, response);
+                break;
+        }
+    }
+
+    private void searchGoods(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // Lấy user_id từ session
+            Integer userId = (Integer) request.getSession().getAttribute("id");
+            if (userId == null) {
+                response.sendRedirect("View/login_form.jsp?error=session_expired");
+                return;
+            }
+
+            // Lấy shop_owner_id từ user_id
+            int shopOwnerId = shopownerDB.getShopOwnerIdByUserId(userId);
+            if (shopOwnerId == -1) {
+                response.sendRedirect("View/ShopOwnerDashboard.jsp?error=shop_owner_not_found");
+                return;
+            }
+
+            // Lấy từ khóa tìm kiếm từ request
+            String keyword = request.getParameter("keyword");
+
+            // Tìm kiếm sản phẩm trong GoodsDB
+            List<Goods> goodsList = goodsDB.searchGoodsByShopAndName(shopOwnerId, keyword);
+
+            // Gửi kết quả tìm kiếm tới JSP
+            request.setAttribute("goodsList", goodsList);
+            request.getRequestDispatcher("View/ShopOwnerDashboard.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("View/ShopOwnerDashboard.jsp?error=search_failed");
+        }
+    }
+
+    private void viewAllGoods(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // Lấy user_id từ session
+            Integer userId = (Integer) request.getSession().getAttribute("id");
+            if (userId == null) {
+                response.sendRedirect("View/login_form.jsp?error=session_expired");
+                return;
+            }
+
+            // Lấy shop_owner_id từ user_id
+            int shopOwnerId = shopownerDB.getShopOwnerIdByUserId(userId);
+            if (shopOwnerId == -1) {
+                response.sendRedirect("View/ShopOwnerDashboard.jsp?error=shop_owner_not_found");
+                return;
+            }
+
+            // Lấy danh sách toàn bộ sản phẩm
+            List<Goods> goodsList = goodsDB.findAllGoodsByShopId(shopOwnerId);
+
+            // Gửi danh sách sản phẩm tới JSP
+            request.setAttribute("goodsList", goodsList);
+            request.getRequestDispatcher("View/ShopOwnerDashboard.jsp").forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("View/ShopOwnerDashboard.jsp?error=view_failed");
+        }
     }
 
     /**
@@ -78,155 +151,181 @@ public class ShopOwnerServlet extends HttpServlet {
      */
     private ShopOwnerDB shopownerDB = new ShopOwnerDB();
     private AddressDB addressDB = new AddressDB();
+    private GoodsDB goodsDB = new GoodsDB();
 
+    /**
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
-//    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-//            throws ServletException, IOException {
-//        request.setCharacterEncoding("UTF-8");
-//        response.setCharacterEncoding("UTF-8");
-//        // Lấy thông tin từ form
-//        String tenshop = request.getParameter("tenshop");
-//        String tenchushop = request.getParameter("tenchushop");
-//        String sdt = request.getParameter("sdt");
-//        String masothue = request.getParameter("masothue");
-//
-//        // Lấy thông tin địa chỉ từ form
-//        String tinhthanh = request.getParameter("tinhthanh");
-//        String xaphuong = request.getParameter("xaphuong");
-//        String quanhuyen = request.getParameter("quanhuyen");
-//        String sonha = request.getParameter("sonha");
-//
-//        try {
-//            // 1. Thêm địa chỉ vào bảng address và lấy address_id
-//            Address address = new Address();
-//            address.setTinhthanh(tinhthanh);
-//            address.setXaphuong(xaphuong);
-//            address.setQuanhuyen(quanhuyen);
-//            address.setSonha(sonha);
-//            int address_id = addressDB.insert(address);
-//
-//            // 2. Lấy user_id từ session sau khi đăng ký thành công
-//            Integer userId = (Integer) request.getSession().getAttribute("user_id");
-//            if (userId == null) {
-//                response.sendRedirect("View/ShopOwner.jsp?error=userid is null.");
-//                return;
-//            }
-//            int user_id = userId.intValue();
-//
-//            // 3. Thêm người bán hàng với address_id và user_id vừa lấy
-//            ShopOwner shopowner = new ShopOwner();
-//            shopowner.setTenshop(tenshop);
-//            shopowner.setTenchushop(tenchushop);
-//            shopowner.setSdt(sdt);
-//            shopowner.setMasothue(masothue);
-//            shopowner.setAddress_id(address_id);
-//            shopowner.setUser_id(user_id);
-//
-//            shopownerDB.insert(shopowner);
-//
-//            response.sendRedirect("View/ShopOwner_form.jsp"); // Điều hướng đến trang thành công
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            response.sendRedirect("View/ShopOwner.jsp?error=Không thể thêm thông tin");
-//        }
-//    }
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    request.setCharacterEncoding("UTF-8");
-    response.setCharacterEncoding("UTF-8");
+            throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
+        if (action == null) {
 
-    // Lấy action để xác định thao tác
-    String action = request.getParameter("action");
+            // Lấy thông tin từ form
+            String tenshop = request.getParameter("tenshop");
+            String tenchushop = request.getParameter("tenchushop");
+            String sdt = request.getParameter("sdt");
+            String masothue = request.getParameter("masothue");
 
-    if (action == null || action.isEmpty() || action.equals("addShopOwner")) {
-        // Logic thêm ShopOwner (giữ nguyên)
-        String tenshop = request.getParameter("tenshop");
-        String tenchushop = request.getParameter("tenchushop");
-        String sdt = request.getParameter("sdt");
-        String masothue = request.getParameter("masothue");
+            // Lấy thông tin địa chỉ từ form
+            String tinhthanh = request.getParameter("tinhthanh");
+            String xaphuong = request.getParameter("xaphuong");
+            String quanhuyen = request.getParameter("quanhuyen");
+            String sonha = request.getParameter("sonha");
 
-        // Lấy thông tin địa chỉ từ form
-        String tinhthanh = request.getParameter("tinhthanh");
-        String xaphuong = request.getParameter("xaphuong");
-        String quanhuyen = request.getParameter("quanhuyen");
-        String sonha = request.getParameter("sonha");
+            try {
+                // 1. Thêm địa chỉ vào bảng address và lấy address_id
+                Address address = new Address();
+                address.setTinhthanh(tinhthanh);
+                address.setXaphuong(xaphuong);
+                address.setQuanhuyen(quanhuyen);
+                address.setSonha(sonha);
+                int address_id = addressDB.insert(address);
 
-        try {
-            // 1. Thêm địa chỉ vào bảng address và lấy address_id do MySQL tự động sinh
-            Address address = new Address();
-            address.setTinhthanh(tinhthanh);
-            address.setXaphuong(xaphuong);
-            address.setQuanhuyen(quanhuyen);
-            address.setSonha(sonha);
-
-            int address_id = addressDB.insert(address); // ID tự động tăng được trả về sau khi thêm
-
-            // 2. Lấy user_id từ session
-            Integer userId = (Integer) request.getSession().getAttribute("user_id");
-            if (userId == null) {
-                response.sendRedirect("View/ShopOwner.jsp?error=userid is null.");
-                return;
-            }
-            int user_id = userId;
-
-            // 3. Thêm ShopOwner với address_id và user_id
-            ShopOwner shopowner = new ShopOwner();
-            shopowner.setTenshop(tenshop);
-            shopowner.setTenchushop(tenchushop);
-            shopowner.setSdt(sdt);
-            shopowner.setMasothue(masothue);
-            shopowner.setAddress_id(address_id);
-            shopowner.setUser_id(user_id);
-
-            shopownerDB.insert(shopowner); // ID shopowner được tự động sinh trong DB
-
-            response.sendRedirect("View/ShopOwner_form.jsp?message=Thêm ShopOwner thành công");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("View/ShopOwner.jsp?error=Không thể thêm thông tin");
-        }
-    } else {
-        // Các xử lý khác (ví dụ: thêm hàng hóa)
-        GoodsDB goodsDB = new GoodsDB();
-
-        try {
-            switch (action) {
-                case "addGoods": {
-                    // Logic thêm hàng hóa
-                    String tensp = request.getParameter("tensp");
-                    String chungloai = request.getParameter("chungloai");
-                    String chitiet = request.getParameter("chitiet");
-                    int gia = Integer.parseInt(request.getParameter("gia"));
-                    int soluong = Integer.parseInt(request.getParameter("soluong"));
-                    String hinhanh = request.getParameter("hinhanh");
-                    int shopOwnerId = Integer.parseInt(request.getParameter("shopOwnerId"));
-                    int giamGia = Integer.parseInt(request.getParameter("giamGia"));
-
-                    Goods goods = new Goods();
-                    goods.setTensp(tensp);
-                    goods.setChungloai(chungloai);
-                    goods.setChitiet(chitiet);
-                    goods.setGia(gia);
-                    goods.setSoluong(soluong);
-                    goods.setHinhanh(hinhanh);
-                    goods.setShopOwnerId(shopOwnerId);
-                    goods.setGiamGia(giamGia);
-
-                    goodsDB.insertGoods(goods); // ID hàng hóa tự động tăng
-
-                    response.sendRedirect("View/Goods_form.jsp?message=Thêm hàng hóa thành công");
-                    break;
+                // 2. Lấy user_id từ session sau khi đăng ký thành công
+                Integer userId = (Integer) request.getSession().getAttribute("user_id");
+                if (userId == null) {
+                    response.sendRedirect("View/ShopOwner.jsp?error=userid is null.");
+                    return;
                 }
-                default:
-                    response.sendRedirect("View/Error.jsp?message=Hành động không hợp lệ");
-                    break;
+                int user_id = userId.intValue();
+
+                // 3. Thêm người bán hàng với address_id và user_id vừa lấy
+                ShopOwner shopowner = new ShopOwner();
+                shopowner.setTenshop(tenshop);
+                shopowner.setTenchushop(tenchushop);
+                shopowner.setSdt(sdt);
+                shopowner.setMasothue(masothue);
+                shopowner.setAddress_id(address_id);
+                shopowner.setUser_id(user_id);
+
+                shopownerDB.insert(shopowner);
+
+                response.sendRedirect("View/login_form.jsp"); // Điều hướng đến trang thành công
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect("View/ShopOwner.jsp?error=Không thể thêm thông tin");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("View/Goods_form.jsp?error=Không thể xử lý yêu cầu");
+            return;
+        }
+        switch (action) {
+            case "addGoods":
+                addGoods(request, response);
+                break;
+            case "editGoods":
+                editGoods(request, response);
+                break;
+            case "deleteGoods":
+                deleteGoods(request, response);
+                break;
+            default:
+                response.sendRedirect("View/ShopOwnerDashboard.jsp");
         }
     }
-}
+
+    private void addGoods(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // Lấy user_id từ session
+            Integer userId = (Integer) request.getSession().getAttribute("id");
+            if (userId == null) {
+                response.sendRedirect("View/GoodsAdd.jsp?error=Chưa đăng nhập");
+                return;
+            }
+
+            // Lấy shop_owner_id từ user_id
+            int shopOwnerId = shopownerDB.getShopOwnerIdByUserId(userId);
+            if (shopOwnerId == -1) {
+                response.sendRedirect("View/GoodsAdd.jsp?error=Không tìm thấy ShopOwner");
+                return;
+            }
+
+            // Lấy các tham số từ request
+            String tensp = request.getParameter("tensp");
+            String chungloai = request.getParameter("chungloai");
+            String chitiet = request.getParameter("chitiet");
+            int gia = Integer.parseInt(request.getParameter("gia"));
+            int soluong = Integer.parseInt(request.getParameter("soluong"));
+            String hinhanh = request.getParameter("hinhanh");
+            int giamGia = Integer.parseInt(request.getParameter("giamGia"));
+
+            // Tạo đối tượng Goods
+            Goods goods = new Goods(0, tensp, chungloai, chitiet, gia, soluong, hinhanh, shopOwnerId, giamGia);
+
+            // Gọi DB để thêm sản phẩm
+            goodsDB.insertGoods(goods);
+
+            response.sendRedirect("View/ShopOwnerDashboard.jsp");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("View/GoodsAdd.jsp?error=Không thể thêm sản phẩm");
+        }
+    }
+
+    private void editGoods(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // Lấy user_id từ session
+            Integer userId = (Integer) request.getSession().getAttribute("id");
+            if (userId == null) {
+                response.sendRedirect("View/GoodsEdit.jsp?error=Chưa đăng nhập");
+                return;
+            }
+
+            // Lấy shop_owner_id từ user_id
+            int shopOwnerId = shopownerDB.getShopOwnerIdByUserId(userId);
+            if (shopOwnerId == -1) {
+                response.sendRedirect("View/GoodsEdit.jsp?error=Không tìm thấy ShopOwner");
+                return;
+            }
+
+            // Lấy các tham số từ request
+            int id = Integer.parseInt(request.getParameter("id"));
+            String tensp = request.getParameter("tensp");
+            String chungloai = request.getParameter("chungloai");
+            String chitiet = request.getParameter("chitiet");
+            int gia = Integer.parseInt(request.getParameter("gia"));
+            int soluong = Integer.parseInt(request.getParameter("soluong"));
+            String hinhanh = request.getParameter("hinhanh");
+            int giamGia = Integer.parseInt(request.getParameter("giamGia"));
+
+            // Kiểm tra sản phẩm có thuộc shop_owner này không
+            if (!goodsDB.isGoodsBelongsToShopOwner(id, shopOwnerId)) {
+                response.sendRedirect("View/GoodsEdit.jsp?error=Sản phẩm không thuộc sở hữu của bạn");
+                return;
+            }
+
+            // Tạo đối tượng Goods
+            Goods goods = new Goods(id, tensp, chungloai, chitiet, gia, soluong, hinhanh, shopOwnerId, giamGia);
+
+            // Gọi DB để cập nhật sản phẩm
+            goodsDB.updateGoods(goods);
+
+            response.sendRedirect("View/ShopOwnerDashboard.jsp");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("View/GoodsEdit.jsp?error=Không thể sửa sản phẩm&id=" + request.getParameter("id"));
+        }
+    }
+
+    private void deleteGoods(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            goodsDB.deleteGoods(id);
+            response.sendRedirect("View/ShopOwnerDashboard.jsp");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("View/ShopOwnerDashboard.jsp?error=Không thể xóa sản phẩm");
+        }
+    }
 
     /**
      * Returns a short description of the servlet.

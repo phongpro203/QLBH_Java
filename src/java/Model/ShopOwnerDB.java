@@ -14,8 +14,9 @@ import java.util.List;
 /**
  *
  * @author kohakuta
- */ 
+ */
 public class ShopOwnerDB extends DBContext<ShopOwner> {
+
     @Override
     protected void setParametersForInsertOrUpdate(PreparedStatement pstmt, ShopOwner shopowner) throws SQLException {
         pstmt.setString(1, shopowner.getTenshop());
@@ -25,10 +26,11 @@ public class ShopOwnerDB extends DBContext<ShopOwner> {
         pstmt.setInt(3, shopowner.getAddress_id());
         pstmt.setInt(3, shopowner.getUser_id());
         // Nếu đây là câu lệnh update, thêm id ở vị trí cuối cùng
-        if (shopowner.getId()!= 0) {
+        if (shopowner.getId() != 0) {
             pstmt.setInt(7, shopowner.getId());
         }
     }
+
     @Override
     protected ShopOwner getEntityFromResultSet(ResultSet rs) throws SQLException {
         ShopOwner shopowner = new ShopOwner();
@@ -42,14 +44,16 @@ public class ShopOwnerDB extends DBContext<ShopOwner> {
         // Thêm các thuộc tính khác của shop_owner nếu có
         return shopowner;
     }
+
     @Override
     protected List<ShopOwner> getListFromResultSet(ResultSet rs) throws SQLException {
         List<ShopOwner> shopownerList = new ArrayList<>();
         while (rs.next()) {
             shopownerList.add(getEntityFromResultSet(rs));
         }
-        return shopownerList; 
+        return shopownerList;
     }
+
     public void insert(ShopOwner shopowner) throws SQLException {
         Connection con = getConnection();
         String sql = "INSERT INTO shop_owner (tenshop, tenchushop, sdt, masothue, address_id, user_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -62,6 +66,7 @@ public class ShopOwnerDB extends DBContext<ShopOwner> {
         statement.setInt(6, shopowner.getUser_id());
         statement.executeUpdate();
     }
+
     public ArrayList<ShopOwner> getAll() throws SQLException {
         Connection con = getConnection();
         ArrayList<ShopOwner> shopOwnerList = new ArrayList<>();
@@ -73,9 +78,25 @@ public class ShopOwnerDB extends DBContext<ShopOwner> {
         }
         return shopOwnerList;
     }
-    public ShopOwner find(int id)
-    {
+
+    public ShopOwner find(int id) {
         String sql = "SELECT * FROM shop_owner WHERE id = ?";
         return findById(id, sql);
     }
+
+    public int getShopOwnerIdByUserId(int userId) {
+    String sql = "SELECT id FROM shop_owner WHERE user_id = ?";
+    try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return -1; // Không tìm thấy shop_owner_id
+}
+
 }

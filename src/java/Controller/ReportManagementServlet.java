@@ -4,13 +4,11 @@
  */
 package Controller;
 
-import Model.Address;
-import Model.AddressDB;
-import Model.ShopOwner;
-import Model.Shopper;
-import Model.ShopperDB;
+import Model.Report;
+import Model.ReportDB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,8 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author kohakuta
  */
-@WebServlet("/Shopper")
-public class ShopperServlet extends HttpServlet {
+@WebServlet("/ReportManagement")
+public class ReportManagementServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,10 +39,10 @@ public class ShopperServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ShopperServlet</title>");            
+            out.println("<title>Servlet ReportManagementServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ShopperServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ReportManagementServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,10 +57,17 @@ public class ShopperServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private final ReportDB reportDB = new ReportDB();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        // Lấy danh sách phản hồi từ CSDL
+        List<Report> reportList = reportDB.findAllReports();
+        request.setAttribute("reportList", reportList);
+
+        // Chuyển tiếp tới JSP
+        request.getRequestDispatcher("View/ReportManagement.jsp").forward(request, response);
     }
 
     /**
@@ -73,62 +78,27 @@ public class ShopperServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    private ShopperDB shopperDB = new ShopperDB();
-    private AddressDB addressDB = new AddressDB();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        response.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
 
-        // Lấy thông tin từ form
-        String hoten = request.getParameter("hoten");
-        String sdt = request.getParameter("sdt");
-        String role = request.getParameter("role"); // Lấy role từ input hidden
+        if ("delete".equals(action)) {
+            deleteReport(request, response);
+        } else {
+            response.sendRedirect("View/ReportManagement.jsp");
+        }
+    }
 
-        // Lấy thông tin địa chỉ từ form
-        String tinhthanh = request.getParameter("tinhthanh");
-        String xaphuong = request.getParameter("xaphuong");
-        String quanhuyen = request.getParameter("quanhuyen");
-        String sonha = request.getParameter("sonha");
-
+    private void deleteReport(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
-            // 1. Thêm địa chỉ vào bảng address và lấy address_id
-            Address address = new Address();
-            address.setTinhthanh(tinhthanh);
-            address.setXaphuong(xaphuong);
-            address.setQuanhuyen(quanhuyen);
-            address.setSonha(sonha);
-            int address_id = addressDB.insert(address);
-
-            // 2. Lấy user_id từ session sau khi đăng ký thành công
-            Integer userId = (Integer) request.getSession().getAttribute("user_id");
-            if (userId == null) {
-                response.sendRedirect("View/Shopper.jsp?error=userid is null.");
-                return;
-            }
-            int user_id = userId.intValue();
-
-            // 3. Thêm khách hàng với address_id và user_id vừa lấy
-            Shopper shopper = new Shopper();
-            shopper.setHoten(hoten);
-            shopper.setSdt(sdt);
-            shopper.setAddress_id(address_id);
-            shopper.setUser_id(user_id);
-
-            shopperDB.insert(shopper);
-
-            // Điều hướng dựa trên role
-            if ("3".equals(role)) {
-                response.sendRedirect("View/ShopOwner.jsp"); // Vai trò người bán hàng
-            } else if ("4".equals(role)) {
-                response.sendRedirect("View/Shipper.jsp"); // Vai trò người giao hàng
-            } else {
-                response.sendRedirect("View/login_form.jsp"); // Mặc định
-            }
+            int reportId = Integer.parseInt(request.getParameter("reportId"));
+            reportDB.deleteReport(reportId);
+            response.sendRedirect("View/ReportManagement.jsp");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("View/Shopper.jsp?error=Không thể thêm thông tin");
+            response.sendRedirect("View/ReportManagement.jsp?error=delete_failed");
         }
     }
 

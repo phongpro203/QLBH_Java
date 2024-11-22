@@ -85,39 +85,28 @@ public class SignupServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
-        // Lấy dữ liệu từ request
+
+        // Lấy dữ liệu từ form đăng ký
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        int roleId = Integer.parseInt(request.getParameter("role"));
+        int roleId = Integer.parseInt(request.getParameter("role")); // Lấy role từ form
 
         // Tạo đối tượng User và gán giá trị
-        User newuser = new User();
-        newuser.setUserName(username);
-        newuser.setPassword(password);
-        newuser.setRole_id(roleId);
+        User newUser = new User();
+        newUser.setUserName(username);
+        newUser.setPassword(password);
+        newUser.setRole_id(roleId);
 
         try {
             if (isUsernameTaken(username)) {
                 response.sendRedirect("View/signup_form.jsp?error=invalid");
             } else {
                 // Lưu người dùng mới vào cơ sở dữ liệu
-                userDB.insert(newuser);
+                userDB.insert(newUser);
                 HttpSession session = request.getSession();
-                session.setAttribute("user_id", newuser.getId());
-                // Chuyển hướng đến login_form.jsp
-                switch (newuser.getRole_id()) {
-                    case 2:
-                        response.sendRedirect("View/Shopper.jsp");
-                        break;
-                    case 3:
-                        response.sendRedirect("View/ShopOwner.jsp");
-                        break;
-                    case 4:
-                        response.sendRedirect("View/Shipper.jsp");
-                        break;
-                    default:
-                        break;
-                }
+                session.setAttribute("user_id", newUser.getId());
+                // Chuyển hướng tới Shopper.jsp với role truyền qua query parameter
+                response.sendRedirect("View/Shopper.jsp?role=" + roleId);
             }
         } catch (IOException | SQLException e) {
             response.sendRedirect("View/signup_form.jsp?error=invalid");

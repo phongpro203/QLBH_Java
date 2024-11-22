@@ -1,5 +1,6 @@
 package Model;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -69,5 +70,43 @@ public class ReportDB extends DBContext<Report> {
     public void deleteReport(int id) {
         String sql = "DELETE FROM report WHERE id = ?";
         delete(id, sql);
+    }
+    public List<String[]> getReportsWithDetailsByUser(int userId) {
+        List<String[]> reports = new ArrayList<>();
+        String sql = """
+        SELECT
+            r.id AS report_id,
+            r.phanhoi AS feedback,
+            g.tensp AS goods_name,
+            s.hoten AS shopper_name,
+            so.tenshop AS shop_name
+        FROM
+            report r
+        JOIN goods g ON r.goods_id = g.id
+        JOIN shopper s ON r.shopper_id = s.id
+        JOIN shop_owner so ON r.shop_owner_id = so.id
+        JOIN user u ON so.user_id = u.id
+        WHERE
+            u.id = ?;
+    """;
+
+        try (
+                Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId); // Gán user_id từ session
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String[] reportDetails = new String[5];
+                    reportDetails[0] = String.valueOf(rs.getInt("report_id")); // ID phản hồi
+                    reportDetails[1] = rs.getString("feedback"); // Nội dung phản hồi
+                    reportDetails[2] = rs.getString("goods_name"); // Tên sản phẩm
+                    reportDetails[3] = rs.getString("shopper_name"); // Tên người mua
+                    reportDetails[4] = rs.getString("shop_name"); // Tên cửa hàng
+                    reports.add(reportDetails);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reports;
     }
 }

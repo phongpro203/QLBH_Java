@@ -64,18 +64,58 @@ public class GoodsDB extends DBContext<Goods> {
         return findAll(sql);
     }
 
-    public List<Goods> searchGoodsByShopAndName(int shopOwnerId, String search) {
-        String sql = "SELECT * FROM goods WHERE shop_owner_id = ? AND tensp LIKE ?";
-        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
-            pstmt.setInt(1, shopOwnerId);
-            pstmt.setString(2, "%" + search + "%");
-            try (ResultSet rs = pstmt.executeQuery()) {
-                return getListFromResultSet(rs);
+    public List<Goods> findAllShopGoods(int id) {
+        String sql = "SELECT g.* FROM goods g JOIN shop_owner s ON g.shop_owner_id = s.id JOIN user u ON s.user_id = u.id WHERE u.id = " + id;
+        return findAll(sql);
+    }
+
+    public List<Goods> findAllGoodsByShopId(int shopOwnerId) {
+        String sql = "SELECT * FROM goods WHERE shop_owner_id = ?";
+        List<Goods> goodsList = new ArrayList<>();
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setInt(1, shopOwnerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    goodsList.add(getEntityFromResultSet(rs));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
         }
+        return goodsList;
+    }
+
+    public boolean isGoodsBelongsToShopOwner(int goodsId, int shopOwnerId) {
+        String sql = "SELECT COUNT(*) AS count FROM goods WHERE id = ? AND shop_owner_id = ?";
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setInt(1, goodsId);
+            ps.setInt(2, shopOwnerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("count") > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<Goods> searchGoodsByShopAndName(int shopOwnerId, String keyword) {
+        String sql = "SELECT * FROM goods WHERE shop_owner_id = ? AND tensp LIKE ?";
+        List<Goods> goodsList = new ArrayList<>();
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setInt(1, shopOwnerId);
+            ps.setString(2, "%" + keyword + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    goodsList.add(getEntityFromResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return goodsList;
     }
 
     public Goods find(int id) {

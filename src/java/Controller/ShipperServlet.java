@@ -92,7 +92,7 @@ public class ShipperServlet extends HttpServlet {
             shipper.setSdt(sdt);
             shipper.setUser_id(user_id);
             shipperDB.insert(shipper);
-            response.sendRedirect("View/Shipper_form.jsp"); // Điều hướng đến trang thành công
+            response.sendRedirect("View/login_form.jsp"); // Điều hướng đến trang thành công
         }catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("View/Shipper.jsp?error=Không thể thêm thông tin");

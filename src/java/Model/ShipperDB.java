@@ -86,4 +86,16 @@ public class ShipperDB extends DBContext<Shipper>{
         }
         return null;  
     }
+    public Shipper findByUserId(int userId) throws SQLException {
+    String sql = "SELECT * FROM shipper WHERE user_id = ?";
+    try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+        ps.setInt(1, userId);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return getEntityFromResultSet(rs);
+            }
+        }
+    }
+    return null; // Không tìm thấy shipper
+}
 }

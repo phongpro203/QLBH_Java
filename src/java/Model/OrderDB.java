@@ -152,5 +152,67 @@ public class OrderDB extends DBContext<Order> {
             e.printStackTrace();
         }
     }
-    
+    public List<Order> findOrdersByShopOwner(int id) {
+        String sql = "SELECT * FROM `order` WHERE shop_owner_id = " + id;
+        return findAll(sql);
+    }
+    public void updateShipperAndStatus(int orderId, int shipperId, String status) {
+        String sql = "UPDATE `order` SET shipper_id = ?, tinhtrang = ? WHERE id = ?";
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setInt(1, shipperId);
+            ps.setString(2, status);
+            ps.setInt(3, orderId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public List<String[]> getOrdersWithName() {
+    List<String[]> orders = new ArrayList<>();
+    String sql = """
+        SELECT
+            o.id,
+            g.tensp AS goods_name,
+            s.hoten AS shopper_name,
+            so.tenshop AS shop_owner_name,
+            COALESCE(sh.hoten, 'N/A') AS shipper_name, -- Người giao hàng, có thể null
+            a_end.tinhthanh AS address_end_id,
+            o.tinhtrang,
+            o.ngaydat,
+            o.ngaygiao,
+            o.thanhtien
+        FROM
+            `order` o
+        JOIN goods g ON o.goods_id = g.id
+        JOIN shopper s ON o.shopper_id = s.id
+        JOIN shop_owner so ON o.shop_owner_id = so.id
+        LEFT JOIN shipper sh ON o.shipper_id = sh.id -- LEFT JOIN để hỗ trợ giá trị NULL
+        JOIN address a_end ON o.address_end_id = a_end.id
+    """;
+
+    try (
+        Connection conn = getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+    ) {
+        while (rs.next()) {
+            String[] order = new String[10]; // Có 10 cột được chọn
+            order[0] = String.valueOf(rs.getInt("id")); // ID đơn hàng
+            order[1] = rs.getString("goods_name"); // Tên sản phẩm
+            order[2] = rs.getString("shopper_name"); // Người mua hàng
+            order[3] = rs.getString("shop_owner_name"); // Chủ cửa hàng
+            order[4] = rs.getString("shipper_name"); // Người giao hàng (có thể là N/A)
+            order[5] = rs.getString("address_end_id"); // Địa chỉ giao hàng
+            order[6] = rs.getString("tinhtrang"); // Tình trạng đơn hàng
+            order[7] = rs.getString("ngaydat"); // Ngày đặt
+            order[8] = rs.getString("ngaygiao"); // Ngày giao
+            order[9] = rs.getString("thanhtien"); // Thành tiền
+            orders.add(order);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return orders;
+}
+
 }

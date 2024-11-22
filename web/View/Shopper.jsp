@@ -5,6 +5,10 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    // Lấy role từ query parameter
+    String role = request.getParameter("role");
+%>
 <!DOCTYPE html>
 <html lang="vi">
     <head>
@@ -12,18 +16,18 @@
         <link rel="stylesheet" href="../assets/css/base.css" />
         <title>Kênh khách hàng</title>
         <style>
-            body{
+            body {
                 height: 100vh;
                 background-color: #f6f6f6;
             }
-            .app{
+            .app {
                 margin: 0;
                 padding: 0;
                 vertical-align: baseline;
                 border: 0;
                 background-color: #f6f6f6;
             }
-            .header{
+            .header {
                 display: flex;
                 top: 0;
                 left: 0;
@@ -34,16 +38,16 @@
                 color: var(--white-color--);
                 align-items: center;
             }
-            .title{
+            .title {
                 font-size: 20px;
                 color: var(--white-color--);
                 padding-left: 20px;
                 font-weight: 400;
             }
-            .onboarding-layout{
+            .onboarding-layout {
                 max-width: none;
             }
-            .layout_main{
+            .layout_main {
                 width: 1232px;
                 margin: 0 auto;
                 display: flex;
@@ -53,30 +57,29 @@
                 padding-top: 20px;
                 border-radius: 10px;
             }
-            .step-header{
+            .step-header {
                 margin: 0;
                 border-bottom: 2px;
                 text-align: center;
                 color: var(--text--color--);
             }
-            .step-header h1{
+            .step-header h1 {
                 padding-top: 10px;
                 font-size: 30px;
             }
-            .step-content{
+            .step-content {
                 position: relative;
                 max-width: 944px;
                 min-height: 198px;
-
             }
-            .form-label{
+            .form-label {
                 width: 200px;
                 text-align: end;
                 box-sizing: border-box;
                 align-items: center;
                 padding-right: 20px;
             }
-            .form-input{
+            .form-input {
                 display: inline-table;
                 width: 100%;
                 padding: 0 12px;
@@ -87,7 +90,7 @@
                 border-radius: 5px;
                 outline: none;
             }
-            .form-input input{
+            .form-input input {
                 width: 300px;
                 padding: 6px;
                 font-size: 1.6rem;
@@ -96,32 +99,31 @@
                 border-radius: 5px;
                 box-shadow: inset 0 2px 0 rgba(0, 0, 0, .02);
             }
-            .iner-item{
+            .iner-item {
                 display: flex;
                 font-size: 15px;
                 align-items: center;
                 padding-bottom: 20px;
             }
-            button{
+            button {
                 background-color: var(--primary--color--);
                 color: var(--white-color--);
                 border-radius: 4px;
-                padding: 10px 15px 10px 15px;
+                padding: 10px 15px;
                 min-width: 130px;
-                
             }
-            .Button{
+            .Button {
                 padding-top: 20px;
                 text-align: center;
                 padding-bottom: 20px;
             }
-            .eds-form-item__reqiured{
+            .eds-form-item__reqiured {
                 color: red;
             }
-            .abstract-form{
+            .abstract-form {
                 padding: 20px;
             }
-            .onboarding-content{
+            .onboarding-content {
                 box-shadow: 0 1px 4px 1px rgba(0,0,0,0.07);
                 background-color: white;
                 display: flex;
@@ -129,12 +131,12 @@
                 justify-content: center;
                 border-radius: 4px;
             }
-        </style> 
+        </style>
     </head>
     <body>
         <div class="app">
             <div class="header">
-                <p class="title">Đăng ký thông tin</p>
+                <p class="title">Đăng ký thông tin khách hàng</p>
             </div>
             <div class="onboarding-layout">
                 <div class="layout_main">
@@ -144,7 +146,10 @@
                                 <h1>Thông tin khách hàng</h1>
                             </div>
                             <div class="abstract-form">
+                                <!-- Form lưu thông tin Shopper -->
                                 <form action="${pageContext.request.contextPath}/Shopper" method="post">
+                                    <!-- Hidden input để truyền role -->
+                                    <input type="hidden" name="role" value="<%= role %>">
                                     <div class="iner-item">
                                         <label class="form-label">
                                             <span class="eds-form-item__reqiured">*</span>

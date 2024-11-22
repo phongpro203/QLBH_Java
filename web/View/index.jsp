@@ -384,7 +384,7 @@
                                 </c:if>
                                 <c:if test="${sessionScope.role_id == 4}">
                                     <li class="category-item">
-                                        <a href="" class="category-item__link">Quản lý giao hàng</a>
+                                        <a href="View/ShipperOrderManagement.jsp" class="category-item__link">Quản lý giao hàng</a>
                                     </li>
                                 </c:if>
                                 <c:if test="${sessionScope.role_id == 1}">

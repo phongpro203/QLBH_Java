@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author kohakuta
  */
-public class ShipperDB extends DBContext<Shipper>{
+public class ShipperDB extends DBContext<Shipper> {
 
     @Override
     protected void setParametersForInsertOrUpdate(PreparedStatement pstmt, Shipper shipper) throws SQLException {
@@ -47,6 +47,7 @@ public class ShipperDB extends DBContext<Shipper>{
         }
         return shipperList;
     }
+
     public void insert(Shipper shipper) throws SQLException {
         Connection con = getConnection();
         String sql = "INSERT INTO shipper (hoten, sdt, user_id) VALUES (?, ?, ?)";
@@ -56,6 +57,7 @@ public class ShipperDB extends DBContext<Shipper>{
         statement.setInt(3, shipper.getUser_id());
         statement.executeUpdate();
     }
+
     public ArrayList<Shipper> getAll() throws SQLException {
         Connection con = getConnection();
         ArrayList<Shipper> shipperList = new ArrayList<>();
@@ -67,12 +69,13 @@ public class ShipperDB extends DBContext<Shipper>{
         }
         return shipperList;
     }
-    public Shipper find(int id)
-    {
+
+    public Shipper find(int id) {
         String sql = "SELECT * FROM shipper WHERE id = ?";
         return findById(id, sql);
     }
-    public Shipper checkSDT(String sdt) throws SQLException{
+
+    public Shipper checkSDT(String sdt) throws SQLException {
         Connection con = getConnection();
         String sql = "SELECT * FROM shipper WHERE sdt = ?";
         PreparedStatement statement = con.prepareStatement(sql);
@@ -84,18 +87,33 @@ public class ShipperDB extends DBContext<Shipper>{
             shipper = getEntityFromResultSet(resultSet);
             return shipper;
         }
-        return null;  
+        return null;
     }
+
     public Shipper findByUserId(int userId) throws SQLException {
-    String sql = "SELECT * FROM shipper WHERE user_id = ?";
-    try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
-        ps.setInt(1, userId);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return getEntityFromResultSet(rs);
+        String sql = "SELECT * FROM shipper WHERE user_id = ?";
+        try (PreparedStatement ps = getConnection().prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return getEntityFromResultSet(rs);
+                }
             }
         }
+        return null; // Không tìm thấy shipper
     }
-    return null; // Không tìm thấy shipper
-}
+
+    public int getShipperIdByUserId(int userId) {
+        String sql = "SELECT id FROM shipper WHERE user_id = ?";
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId); // Truyền `user_id` vào truy vấn
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("id"); // Trả về `shipper_id`
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Trả về -1 nếu không tìm thấy
+    }
 }

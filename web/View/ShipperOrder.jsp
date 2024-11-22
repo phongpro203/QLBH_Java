@@ -1,17 +1,18 @@
 <%-- 
-    Document   : ShipperOrderManagement
-    Created on : Nov 20, 2024, 8:23:21 PM
+    Document   : ShipperOrder
+    Created on : Nov 22, 2024, 10:39:35 AM
     Author     : kohakuta
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="Model.OrderDB"%>
+<%@page import="Model.ShipperDB"%>
 <%@page import="java.util.List"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Quản lý đơn hàng cho shipper</title>
+        <title>Đơn hàng đã nhận</title>
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -113,20 +114,13 @@
             <aside class="sidebar">
                 <h2>Quản lý đơn hàng</h2>
                 <ul>
-                    <li>
-                        <a href="${pageContext.request.contextPath}/Goods">Quay lại trang chủ</a>
-                    </li>
-                    <li>
-                        <a href="ShipperOrderManagement.jsp">Nhận đơn</a>
-                    </li>
-                    <li>
-                        <a href="ShipperOrder.jsp">Đơn đã nhận</a>
-                    </li>
+                    <li><a href="${pageContext.request.contextPath}/Goods">Quay lại trang chủ</a></li>
+                    <li><a href="ShipperOrderManagement.jsp">Nhận đơn</a></li>
+                    <li><a href="ShipperOrder.jsp">Đơn đã nhận</a></li>
                 </ul>
             </aside>
             <main class="content">
-                <div id="storeOwners" class="section">
-                <h3>Quản lý đơn hàng cho shipper</h3>
+                <h3>Đơn hàng đã nhận</h3>
                 <table>
                     <tr>
                         <th>Người bán</th>
@@ -138,34 +132,50 @@
                         <th>Hành động</th>
                     </tr>
                     <%
-                        OrderDB orderDB = new OrderDB();
-                        List<String[]> orderDetails = orderDB.getOrdersWithName();
+                        // Lấy `user_id` từ session
+                        Integer userId = (Integer) session.getAttribute("id");
 
-                        if (orderDetails != null && !orderDetails.isEmpty()) {
-                            for (String[] order : orderDetails) {
-                                String status = order[6]; // Tình trạng đơn hàng
-%>
+                        if (userId != null) {
+                            // Lấy `shipper_id` từ `user_id`
+                            ShipperDB shipperDB = new ShipperDB();
+                            int shipperId = shipperDB.getShipperIdByUserId(userId);
+
+                            // Kiểm tra nếu `shipper_id` hợp lệ
+                            if (shipperId > 0) {
+                                // Lấy danh sách đơn hàng theo `shipper_id`
+                                OrderDB orderDB = new OrderDB();
+                                List<String[]> orders = orderDB.getOrdersByShipperId(shipperId);
+
+                                if (orders != null && !orders.isEmpty()) {
+                                    for (String[] order : orders) {
+                    %>
                     <tr>
-                        <td><%= order[3] != null ? order[3] : "N/A"%></td> <!-- Người bán -->
-                        <td><%= order[1] != null ? order[1] : "N/A"%></td> <!-- Tên sản phẩm -->
-                        <td><%= order[2] != null ? order[2] : "N/A"%></td> <!-- Người mua -->
-                        <td><%= order[5] != null ? order[5] : "N/A"%></td> <!-- Địa chỉ giao hàng -->
-                        <td><%= order[9] != null ? order[9] : "N/A"%></td> <!-- Thành tiền -->
+                        <td><%= order[3]%></td> <!-- Chủ cửa hàng -->
+                        <td><%= order[1]%></td> <!-- Tên sản phẩm -->
+                        <td><%= order[2]%></td> <!-- Người mua -->                        
+                        <td><%= order[4]%></td> <!-- Địa chỉ giao hàng -->
+                        <td><%= order[8]%></td> <!-- Thành tiền -->
                         <td>
-                            <% if ("Đơn hàng gặp sự cố".equals(status)) {%>
-                            <span class="status-error"><%= status%></span>
-                            <% } else if ("Đã giao".equals(status)) {%>
-                            <span class="status-success"><%= status%></span>
+                            <% if ("Đơn hàng gặp sự cố".equals(order[5])) {%>
+                            <span class="status-error"><%= order[5]%></span>
+                            <% } else if ("Đã giao".equals(order[5])) {%>
+                            <span class="status-success"><%= order[5]%></span>
                             <% } else {%>
-                            <span><%= status%></span>
+                            <span><%= order[5]%></span>
                             <% } %>
                         </td>
                         <td>
-                            <% if ("Chờ giao hàng".equals(status)) {%>
+                            <%-- Hành động --%>
+                            <% if ("Đang giao".equals(order[5])) {%>
                             <form action="${pageContext.request.contextPath}/ShipperManagement" method="post" style="display:inline;">
-                                <input type="hidden" name="action" value="acceptOrder">
+                                <input type="hidden" name="action" value="completeDelivery">
                                 <input type="hidden" name="orderId" value="<%= order[0]%>">
-                                <button type="submit">Nhận đơn</button>
+                                <button type="submit">Đã giao</button>
+                            </form>
+                            <form action="${pageContext.request.contextPath}/ShipperManagement" method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="reportIssue">
+                                <input type="hidden" name="orderId" value="<%= order[0]%>">
+                                <button type="submit" style="background-color: red;">Báo hàng hỏng</button>
                             </form>
                             <% } %>
                         </td>
@@ -175,7 +185,21 @@
                     } else {
                     %>
                     <tr>
-                        <td colspan="6" style="text-align:center;">Không có đơn hàng nào</td>
+                        <td colspan="9" style="text-align:center;">Không có đơn hàng nào</td>
+                    </tr>
+                    <%
+                        }
+                    } else {
+                    %>
+                    <tr>
+                        <td colspan="9" style="text-align:center;">Không tìm thấy shipper ID</td>
+                    </tr>
+                    <%
+                        }
+                    } else {
+                    %>
+                    <tr>
+                        <td colspan="9" style="text-align:center;">Người dùng chưa đăng nhập</td>
                     </tr>
                     <%
                         }

@@ -133,7 +133,7 @@
                         <tr>
                             
                             <th>Tên sản phẩm</th>
-                            <th>Tên quán</th>
+                            <th>Tên khách hàng</th>
                             <th>Phản hồi</th>
                         </tr>
                         <%
@@ -143,7 +143,7 @@
                         <tr>
                             
                             <td><%= report[2]%></td> <!-- Tên sản phẩm -->
-                            <td><%= report[3]%></td> <!-- STên quán -->
+                            <td><%= report[3]%></td> <!-- Tên khách hàng -->
                             <td><%= report[1]%></td> <!-- Phản hồi -->
                         </tr>
                         <%

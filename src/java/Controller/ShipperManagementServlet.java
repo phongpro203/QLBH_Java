@@ -148,10 +148,10 @@ public class ShipperManagementServlet extends HttpServlet {
         try {
             int orderId = Integer.parseInt(request.getParameter("orderId"));
             orderDB.updateTinhTrangOrder(orderId, "Đơn hàng gặp sự cố");
-            response.sendRedirect("View/ShipperOrderManagement.jsp?success=issue_reported");
+            response.sendRedirect("View/ShipperOrder.jsp?success=issue_reported");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("View/ShipperOrderManagement.jsp?error=report_failed");
+            response.sendRedirect("View/ShipperOrder.jsp?error=report_failed");
         }
     }
 
@@ -160,10 +160,10 @@ public class ShipperManagementServlet extends HttpServlet {
         try {
             int orderId = Integer.parseInt(request.getParameter("orderId"));
             orderDB.updateTinhTrangOrder(orderId, "Đã giao");
-            response.sendRedirect("View/ShipperOrderManagement.jsp?success=delivery_completed");
+            response.sendRedirect("View/ShipperOrder.jsp?success=delivery_completed");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("View/ShipperOrderManagement.jsp?error=complete_failed");
+            response.sendRedirect("View/ShipperOrder.jsp?error=complete_failed");
         }
     }
 

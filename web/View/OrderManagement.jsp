@@ -7,6 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="Model.OrderDB"%>
 <%@page import="java.util.List"%>
+<%@page import="Model.ShopOwnerDB"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,7 +22,7 @@
 
             .container {
                 display: flex;
-                height: 100vh;
+                min-height: 100vh;
             }
 
             .sidebar {
@@ -96,6 +97,7 @@
                 color: white;
                 text-decoration: none;
             }
+
             .status-error {
                 color: red;
                 font-weight: bold;
@@ -134,8 +136,16 @@
                         <th>Hành động</th>
                     </tr>
                     <%
+                        // Lấy user_id từ session
+                        int userId = (int) session.getAttribute("id");
+
+                        // Lấy shop_owner_id từ user_id
+                        ShopOwnerDB shopOwnerDB = new ShopOwnerDB();
+                        int shopOwnerId = shopOwnerDB.getShopOwnerIdByUserId(userId);
+
+                        // Lấy danh sách đơn hàng theo shop_owner_id
                         OrderDB orderDB = new OrderDB();
-                        List<String[]> orderDetails = orderDB.getOrdersWithName();
+                        List<String[]> orderDetails = orderDB.getOrdersWithNameByShopOwner(shopOwnerId);
 
                         if (orderDetails != null && !orderDetails.isEmpty()) {
                             for (String[] order : orderDetails) {
@@ -157,7 +167,7 @@
                             <span class="status-success"><%= order[6]%></span>
                             <% } else {%>
                             <span><%= order[6]%></span>
-                            <% }%>
+                            <% } %>
                         </td>
                         <td>
                             <%-- Hành động --%>

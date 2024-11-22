@@ -9,6 +9,8 @@ import Model.Shipper;
 import Model.ShipperDB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -159,7 +161,12 @@ public class ShipperManagementServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             int orderId = Integer.parseInt(request.getParameter("orderId"));
-            orderDB.updateTinhTrangOrder(orderId, "Đã giao");
+            orderDB.updateTinhTrangOrder(orderId, "Giao hàng thành công");
+            Date currentDate = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(currentDate);
+            java.sql.Date ngayGiao = new java.sql.Date(currentDate.getTime());
+            orderDB.updateNgayGiaoOrder(orderId, ngayGiao);
             response.sendRedirect("View/ShipperOrder.jsp?success=delivery_completed");
         } catch (Exception e) {
             e.printStackTrace();

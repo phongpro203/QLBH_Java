@@ -4,6 +4,10 @@
     Author     : kohakuta
 --%>
 
+<%@page import="java.util.Arrays"%>
+<%@page import="java.util.Comparator"%>
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.Collections"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="Model.OrderDB"%>
 <%@page import="Model.ShipperDB"%>
@@ -22,7 +26,7 @@
 
             .container {
                 display: flex;
-                min-height: 100vh;
+                height: 100vh;
             }
 
             .sidebar {
@@ -56,6 +60,7 @@
             .content {
                 flex: 1;
                 padding: 20px;
+                overflow-y: auto;
             }
 
             table {
@@ -116,7 +121,7 @@
                 <ul>
                     <li><a href="${pageContext.request.contextPath}/Goods">Quay lại trang chủ</a></li>
                     <li><a href="ShipperOrderManagement.jsp">Nhận đơn</a></li>
-                    <li><a href="ShipperOrder.jsp">Đơn đã nhận</a></li>
+                    <li><a style="color: #0056b3;" href="ShipperOrder.jsp">Đơn giao</a></li>
                 </ul>
             </aside>
             <main class="content">
@@ -145,7 +150,13 @@
                                 // Lấy danh sách đơn hàng theo `shipper_id`
                                 OrderDB orderDB = new OrderDB();
                                 List<String[]> orders = orderDB.getOrdersByShipperId(shipperId);
-
+                                Collections.sort(orders, new Comparator<String[]>() {
+                                    @Override
+                                    public int compare(String[] o1, String[] o2) {
+                                        List<String> priority = Arrays.asList("Đang giao", "Giao hàng thành công", "Đã giao", "Đã đánh giá");
+                                        return Integer.compare(priority.indexOf(o1[5]), priority.indexOf(o2[5]));
+                                    }
+                                });
                                 if (orders != null && !orders.isEmpty()) {
                                     for (String[] order : orders) {
                     %>

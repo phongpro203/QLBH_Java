@@ -111,7 +111,7 @@ public class BuyingProcessServlet extends HttpServlet {
             java.sql.Date ngayDat = new java.sql.Date(currentDate.getTime());
             java.sql.Date ngayGiao = new java.sql.Date(calendar.getTimeInMillis()); // Chuyển đổi sang java.sql.Date
 
-            Order order = new Order(0, goods_id, shopper.getId(), shop_owner_id, null, address[0], address[1], "Chờ lấy hàng", ngayDat, ngayGiao, thanhtien);
+            Order order = new Order(0, goods_id, shopper.getId(), shop_owner_id, null, address[0], address[1], "Chờ lấy hàng", ngayDat, null, thanhtien);
             OrderDB orderdb = new OrderDB();
             orderdb.insertOrder(order);
             response.sendRedirect("Delivery");

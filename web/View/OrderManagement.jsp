@@ -4,6 +4,7 @@
     Author     : kohakuta
 --%>
 
+<%@page import="java.util.Comparator"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="Model.OrderDB"%>
 <%@page import="java.util.List"%>
@@ -22,7 +23,7 @@
 
             .container {
                 display: flex;
-                min-height: 100vh;
+                height: 100vh;
             }
 
             .sidebar {
@@ -56,6 +57,7 @@
             .content {
                 flex: 1;
                 padding: 20px;
+                overflow-y: auto;
             }
 
             table {
@@ -116,7 +118,7 @@
                 <ul>
                     <li><a href="${pageContext.request.contextPath}/Goods">Quay lại trang chủ</a></li>
                     <li><a href="ShopOwnerDashboard.jsp">Quản lý sản phẩm</a></li>
-                    <li><a href="OrderManagement.jsp">Quản lý đơn hàng</a></li>
+                    <li><a style="color: #0056b3;" href="OrderManagement.jsp">Quản lý đơn hàng</a></li>
                     <li><a href="ReportManagement.jsp">Phản hồi của khách</a></li>
                 </ul>
             </aside>
@@ -137,20 +139,26 @@
                     </tr>
                     <%
                         // Lấy user_id từ session
-                        int userId = (int) session.getAttribute("id");
+                            int userId = (int) session.getAttribute("id");
 
-                        // Lấy shop_owner_id từ user_id
-                        ShopOwnerDB shopOwnerDB = new ShopOwnerDB();
-                        int shopOwnerId = shopOwnerDB.getShopOwnerIdByUserId(userId);
+                            // Lấy shop_owner_id từ user_id
+                            ShopOwnerDB shopOwnerDB = new ShopOwnerDB();
+                            int shopOwnerId = shopOwnerDB.getShopOwnerIdByUserId(userId);
 
-                        // Lấy danh sách đơn hàng theo shop_owner_id
-                        OrderDB orderDB = new OrderDB();
-                        List<String[]> orderDetails = orderDB.getOrdersWithNameByShopOwner(shopOwnerId);
+                            // Lấy danh sách đơn hàng theo shop_owner_id
+                            OrderDB orderDB = new OrderDB();
+                            List<String[]> orderDetails = orderDB.getOrdersWithNameByShopOwner(shopOwnerId);
+                            orderDetails.sort(new Comparator<String[]>() {
+                                @Override
+                                public int compare(String[] a, String[] b) {
+                                    return a[6].compareTo(b[6]);
+                                }
+                            });
 
-                        if (orderDetails != null && !orderDetails.isEmpty()) {
-                            for (String[] order : orderDetails) {
-                                String shipperName = order[4] != null && !order[4].isEmpty() ? order[4] : "N/A"; // Nếu chưa có shipper nhận
-%>
+                            if (orderDetails != null && !orderDetails.isEmpty()) {
+                                for (String[] order : orderDetails) {
+                                    String shipperName = order[4] != null && !order[4].isEmpty() ? order[4] : "N/A"; // Nếu chưa có shipper nhận
+                    %>
                     <tr>
                         <td><%= order[1] != null ? order[1] : "N/A"%></td> <!-- Tên sản phẩm -->
                         <td><%= order[2] != null ? order[2] : "N/A"%></td> <!-- Người mua -->

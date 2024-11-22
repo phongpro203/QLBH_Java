@@ -147,6 +147,17 @@ public class OrderDB extends DBContext<Order> {
             e.printStackTrace();
         }
     }
+    
+    public void updateNgayGiaoOrder(int id, java.sql.Date ngayGiao) {
+        String sql = "UPDATE `order` SET ngaygiao = ? WHERE id = ?";
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
+            pstmt.setDate(1, ngayGiao);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public List<Order> findOrdersByShopOwner(int id) {
         String sql = "SELECT * FROM `order` WHERE shop_owner_id = " + id;

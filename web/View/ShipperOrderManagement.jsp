@@ -21,7 +21,7 @@
 
             .container {
                 display: flex;
-                min-height: 100vh;
+                height: 100vh;
             }
 
             .sidebar {
@@ -55,6 +55,7 @@
             .content {
                 flex: 1;
                 padding: 20px;
+                overflow-y: auto;
             }
 
             table {
@@ -117,10 +118,10 @@
                         <a href="${pageContext.request.contextPath}/Goods">Quay lại trang chủ</a>
                     </li>
                     <li>
-                        <a href="ShipperOrderManagement.jsp">Nhận đơn</a>
+                        <a style="color: #0056b3;" href="ShipperOrderManagement.jsp">Nhận đơn</a>
                     </li>
                     <li>
-                        <a href="ShipperOrder.jsp">Đơn đã nhận</a>
+                        <a href="ShipperOrder.jsp">Đơn giao</a>
                     </li>
                 </ul>
             </aside>
@@ -138,12 +139,15 @@
                         <th>Hành động</th>
                     </tr>
                     <%
+                        int count = 0;
                         OrderDB orderDB = new OrderDB();
                         List<String[]> orderDetails = orderDB.getOrdersWithName();
 
                         if (orderDetails != null && !orderDetails.isEmpty()) {
                             for (String[] order : orderDetails) {
-                                String status = order[6]; // Tình trạng đơn hàng
+                            String status = order[6];  // Tình trạng đơn hàng
+                             if ("Chờ giao hàng".equals(status)) {
+                               count++;
 %>
                     <tr>
                         <td><%= order[3] != null ? order[3] : "N/A"%></td> <!-- Người bán -->
@@ -171,7 +175,7 @@
                         </td>
                     </tr>
                     <%
-                        }
+                        }}
                     } else {
                     %>
                     <tr>
@@ -180,6 +184,17 @@
                     <%
                         }
                     %>
+                    <%
+                        if(count < 1)
+                        {
+                        %>
+                        <tr>
+                        <td colspan="6" style="text-align:center;">Không có đơn hàng nào</td>
+                    </tr>
+                        <%
+                            }
+                    %>
+                    
                 </table>
             </main>
         </div>

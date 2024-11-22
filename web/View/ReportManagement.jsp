@@ -122,7 +122,7 @@
                         <a href="OrderManagement.jsp">Quản lý đơn hàng</a>
                     </li>
                     <li>
-                        <a href="ReportManagement.jsp">Phản hồi của khách</a>
+                        <a style="color: #0056b3;" href="ReportManagement.jsp">Phản hồi của khách</a>
                     </li>
                 </ul>
             </aside>

@@ -45,7 +45,7 @@
 
             .container {
                 display: flex;
-                min-height: 100vh;
+                height: 100vh;
             }
 
             .sidebar {
@@ -79,6 +79,7 @@
             .content {
                 flex: 1;
                 padding: 20px;
+                overflow-y: auto;
             }
 
             table {
@@ -131,7 +132,7 @@
                         <a href="${pageContext.request.contextPath}/Goods">Quay lại trang chủ</a>
                     </li>
                     <li>
-                        <a href="ShopOwnerDashboard.jsp">Quản lý sản phẩm</a>
+                        <a style="color: #0056b3;" href="ShopOwnerDashboard.jsp">Quản lý sản phẩm</a>
                     </li>
                     <li>
                         <a href="OrderManagement.jsp">Quản lý đơn hàng</a>
